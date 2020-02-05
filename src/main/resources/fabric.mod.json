@@ -18,8 +18,7 @@
 
   "mixins": [ "artifice.mixins.json" ],
   "depends": {
-    "minecraft": "1.15.x",
-    "fabricloader": ">=0.7.1"
+    "fabricloader": ">=0.7.2"
   },
   "custom": {
     "modmenu:api": true
