@@ -27,11 +27,15 @@ sourceSets {
 		compileClasspath += main.compileClasspath
 		runtimeClasspath += main.runtimeClasspath
 	}
+	test{
+		compileClasspath += main.compileClasspath
+		runtimeClasspath += main.runtimeClasspath
+	}
 }
 
 dependencies {
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
-	mappings "net.fabricmc:yarn:$minecraft_version+${project.yarn_mappings}:v2"
+	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
 	modApi "net.fabricmc:fabric-loader:${project.loader_version}"
 
 	testImplementation "org.junit.jupiter:junit-jupiter-api:5.4.2"
@@ -39,7 +43,7 @@ dependencies {
 	testRuntime "org.junit.jupiter:junit-jupiter-engine:5.4.2"
 
 	testmodImplementation sourceSets.main.output
-	modRuntime("net.fabricmc.fabric-api:fabric-api:0.5.3+build.308-1.16")
+	modRuntime("net.fabricmc.fabric-api:fabric-api:$fabric_version")
 
 //	modRuntime "io.github.prospector.modmenu:ModMenu:1.6.2-92"
 //	modRuntime "foamfix-for-minecraft:foamfix:0.12.1"
