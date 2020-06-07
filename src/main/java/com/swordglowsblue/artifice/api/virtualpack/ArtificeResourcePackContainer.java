@@ -1,7 +1,6 @@
 package com.swordglowsblue.artifice.api.virtualpack;
 
 import com.swordglowsblue.artifice.api.ArtificeResourcePack;
-import com.swordglowsblue.artifice.api.util.Processor;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.resource.ClientResourcePackProfile;
@@ -29,7 +28,8 @@ public class ArtificeResourcePackContainer extends ClientResourcePackProfile {
             wrapping.getCompatibility(),
             wrapping.getInitialPosition(),
             wrapping.isPinned(),
-            null
+            wrapping.method_29483(),
+                null
         );
 
         this.optional = optional;

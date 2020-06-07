@@ -82,8 +82,6 @@ public class ArtificeTestMod implements ModInitializer, ClientModInitializer {
                 .entry("block.artifice.test_block", "Artifice Test Block in custom lang"));
         });
 
-        Artifice.registerAssets(id("testmod2"), pack -> {
-            pack.setOptional();
-        });
+        Artifice.registerAssets(id("testmod2"), ArtificeResourcePack.ClientResourcePackBuilder::setOptional);
     }
 }

@@ -1,22 +1,10 @@
 package com.swordglowsblue.artifice.api;
 
-import java.io.IOException;
-import java.util.Map;
-import java.util.function.Supplier;
-
-import com.swordglowsblue.artifice.api.builder.assets.AnimationBuilder;
-import com.swordglowsblue.artifice.api.builder.assets.BlockStateBuilder;
-import com.swordglowsblue.artifice.api.builder.assets.ModelBuilder;
-import com.swordglowsblue.artifice.api.builder.assets.ParticleBuilder;
-import com.swordglowsblue.artifice.api.builder.assets.TranslationBuilder;
+import com.swordglowsblue.artifice.api.builder.assets.*;
 import com.swordglowsblue.artifice.api.builder.data.AdvancementBuilder;
 import com.swordglowsblue.artifice.api.builder.data.LootTableBuilder;
 import com.swordglowsblue.artifice.api.builder.data.TagBuilder;
-import com.swordglowsblue.artifice.api.builder.data.recipe.CookingRecipeBuilder;
-import com.swordglowsblue.artifice.api.builder.data.recipe.GenericRecipeBuilder;
-import com.swordglowsblue.artifice.api.builder.data.recipe.ShapedRecipeBuilder;
-import com.swordglowsblue.artifice.api.builder.data.recipe.ShapelessRecipeBuilder;
-import com.swordglowsblue.artifice.api.builder.data.recipe.StonecuttingRecipeBuilder;
+import com.swordglowsblue.artifice.api.builder.data.recipe.*;
 import com.swordglowsblue.artifice.api.resource.ArtificeResource;
 import com.swordglowsblue.artifice.api.util.Processor;
 import com.swordglowsblue.artifice.api.virtualpack.ArtificeResourcePackContainer;
@@ -24,7 +12,8 @@ import com.swordglowsblue.artifice.common.ClientOnly;
 import com.swordglowsblue.artifice.common.ClientResourcePackProfileLike;
 import com.swordglowsblue.artifice.common.ServerResourcePackProfileLike;
 import com.swordglowsblue.artifice.impl.ArtificeResourcePackImpl;
-
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.resource.ClientResourcePackProfile;
 import net.minecraft.client.resource.language.LanguageDefinition;
 import net.minecraft.resource.ResourcePack;
@@ -33,8 +22,7 @@ import net.minecraft.resource.ResourceType;
 import net.minecraft.resource.VanillaDataPackProvider;
 import net.minecraft.util.Identifier;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
+import java.io.IOException;
 
 /**
  * A resource pack containing Artifice-based resources. May be used for resource generation with
@@ -71,11 +59,11 @@ public interface ArtificeResourcePack extends ResourcePack, ServerResourcePackPr
     /**
      * Create a client-side {@link ResourcePackProfile} for this pack.
      *
-     * @param factory The factory function passed to {@link VanillaDataPackProvider#register(Map, ResourcePackProfile.Factory)}.
+     * @param factory The factory function passed to {@link VanillaDataPackProvider#register(java.util.function.Consumer, ResourcePackProfile.class_5351)}.
      * @return The created container.
      */
     @Override
-    default <T extends ResourcePackProfile> ClientOnly<ClientResourcePackProfile> toClientResourcePackProfile(ResourcePackProfile.Factory<T> factory) {
+    default <T extends ResourcePackProfile> ClientOnly<ClientResourcePackProfile> toClientResourcePackProfile(ResourcePackProfile.class_5351<T> factory) {
         return new ClientOnly<>(getAssetsContainer(factory));
     }
 
@@ -86,28 +74,28 @@ public interface ArtificeResourcePack extends ResourcePack, ServerResourcePackPr
      * @return The created container.
      */
     @Override
-    default <T extends ResourcePackProfile> ResourcePackProfile toServerResourcePackProfile(ResourcePackProfile.Factory<T> factory) {
+    default <T extends ResourcePackProfile> ResourcePackProfile toServerResourcePackProfile(ResourcePackProfile.class_5351<T> factory) {
         return getDataContainer(factory);
     }
 
     /**
-     * @param factory The factory function passed to {@link VanillaDataPackProvider#register(Map, ResourcePackProfile.Factory)}.
+     * @param factory The factory function passed to {@link VanillaDataPackProvider#register(java.util.function.Consumer, ResourcePackProfile.class_5351)}.
      * @return The created container.
-     * @deprecated use {@link ArtificeResourcePack#toClientResourcePackProfile(ResourcePackProfile.Factory)}
+     * @deprecated use {@link ArtificeResourcePack#toClientResourcePackProfile(ResourcePackProfile.class_5351)}
      * Create a client-side {@link ResourcePackProfile} for this pack.
      */
     @Environment(EnvType.CLIENT)
     @Deprecated
-    ArtificeResourcePackContainer getAssetsContainer(ResourcePackProfile.Factory<?> factory);
+    ArtificeResourcePackContainer getAssetsContainer(ResourcePackProfile.class_5351<?> factory);
 
     /**
      * @param factory The factory function passed to {@link VanillaDataPackProvider#register}.
      * @return The created container.
-     * @deprecated use {@link ArtificeResourcePack#toServerResourcePackProfile(ResourcePackProfile.Factory)}
+     * @deprecated use {@link ArtificeResourcePack#toServerResourcePackProfile(ResourcePackProfile.class_5351)}
      * Create a server-side {@link ResourcePackProfile} for this pack.
      */
     @Deprecated
-    ResourcePackProfile getDataContainer(ResourcePackProfile.Factory<?> factory);
+    ResourcePackProfile getDataContainer(ResourcePackProfile.class_5351<?> factory);
 
     /**
      * Create a new client-side {@link ArtificeResourcePack} and register resources using the given callback.

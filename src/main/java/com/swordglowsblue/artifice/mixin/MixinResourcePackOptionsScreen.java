@@ -1,3 +1,4 @@
+/*
 package com.swordglowsblue.artifice.mixin;
 
 import com.swordglowsblue.artifice.api.virtualpack.ArtificeResourcePackContainer;
@@ -49,3 +50,4 @@ public abstract class MixinResourcePackOptionsScreen {
         });
     }
 }
+*/
