@@ -63,6 +63,7 @@ public interface ArtificeResourcePack extends ResourcePack, ServerResourcePackPr
      * @return The created container.
      */
     @Override
+    @Environment(EnvType.CLIENT)
     default <T extends ResourcePackProfile> ClientOnly<ClientResourcePackProfile> toClientResourcePackProfile(ResourcePackProfile.class_5351<T> factory) {
         return new ClientOnly<>(getAssetsContainer(factory));
     }

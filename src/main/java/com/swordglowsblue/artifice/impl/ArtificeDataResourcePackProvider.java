@@ -1,5 +1,10 @@
 package com.swordglowsblue.artifice.impl;
 
+import java.util.Map;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
+
+import com.swordglowsblue.artifice.api.Artifice;
 import com.swordglowsblue.artifice.common.ArtificeRegistry;
 import net.minecraft.resource.ResourcePackProfile;
 import net.minecraft.resource.ResourcePackProvider;
