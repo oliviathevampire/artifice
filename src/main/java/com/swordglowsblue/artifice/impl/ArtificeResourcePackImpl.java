@@ -1,20 +1,5 @@
 package com.swordglowsblue.artifice.impl;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
@@ -22,21 +7,13 @@ import com.google.gson.JsonObject;
 import com.swordglowsblue.artifice.api.ArtificeResourcePack;
 import com.swordglowsblue.artifice.api.builder.JsonObjectBuilder;
 import com.swordglowsblue.artifice.api.builder.TypedJsonBuilder;
-import com.swordglowsblue.artifice.api.builder.assets.AnimationBuilder;
-import com.swordglowsblue.artifice.api.builder.assets.BlockStateBuilder;
-import com.swordglowsblue.artifice.api.builder.assets.ModelBuilder;
-import com.swordglowsblue.artifice.api.builder.assets.ParticleBuilder;
-import com.swordglowsblue.artifice.api.builder.assets.TranslationBuilder;
+import com.swordglowsblue.artifice.api.builder.assets.*;
 import com.swordglowsblue.artifice.api.builder.data.AdvancementBuilder;
-import com.swordglowsblue.artifice.api.builder.data.dimension.DimensionBuilder;
-import com.swordglowsblue.artifice.api.builder.data.dimension.DimensionTypeBuilder;
 import com.swordglowsblue.artifice.api.builder.data.LootTableBuilder;
 import com.swordglowsblue.artifice.api.builder.data.TagBuilder;
-import com.swordglowsblue.artifice.api.builder.data.recipe.CookingRecipeBuilder;
-import com.swordglowsblue.artifice.api.builder.data.recipe.GenericRecipeBuilder;
-import com.swordglowsblue.artifice.api.builder.data.recipe.ShapedRecipeBuilder;
-import com.swordglowsblue.artifice.api.builder.data.recipe.ShapelessRecipeBuilder;
-import com.swordglowsblue.artifice.api.builder.data.recipe.StonecuttingRecipeBuilder;
+import com.swordglowsblue.artifice.api.builder.data.dimension.DimensionBuilder;
+import com.swordglowsblue.artifice.api.builder.data.dimension.DimensionTypeBuilder;
+import com.swordglowsblue.artifice.api.builder.data.recipe.*;
 import com.swordglowsblue.artifice.api.resource.ArtificeResource;
 import com.swordglowsblue.artifice.api.resource.JsonResource;
 import com.swordglowsblue.artifice.api.util.IdUtils;
@@ -44,22 +21,25 @@ import com.swordglowsblue.artifice.api.util.Processor;
 import com.swordglowsblue.artifice.api.virtualpack.ArtificeResourcePackContainer;
 import com.swordglowsblue.artifice.common.ArtificeRegistry;
 import com.swordglowsblue.artifice.common.ClientOnly;
-import org.apache.commons.io.input.NullInputStream;
-import org.apache.logging.log4j.LogManager;
-
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.fabricmc.api.EnvironmentInterface;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.SharedConstants;
-import net.minecraft.client.resource.ClientResourcePackProfile;
 import net.minecraft.client.resource.language.LanguageDefinition;
 import net.minecraft.resource.ResourcePackProfile;
 import net.minecraft.resource.ResourcePackSource;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.resource.metadata.ResourceMetadataReader;
 import net.minecraft.util.Identifier;
+import org.apache.commons.io.input.NullInputStream;
+import org.apache.logging.log4j.LogManager;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.fabricmc.api.EnvironmentInterface;
-import net.fabricmc.loader.api.FabricLoader;
+import java.io.*;
+import java.util.*;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 public class ArtificeResourcePackImpl implements ArtificeResourcePack {
     private final ResourceType type;
@@ -315,10 +295,10 @@ public class ArtificeResourcePackImpl implements ArtificeResourcePack {
 
     @Override
     @Environment(EnvType.CLIENT)
-    public <T extends ResourcePackProfile> ClientOnly<ClientResourcePackProfile> toClientResourcePackProfile(ResourcePackProfile.Factory<T> factory) {
+    public <T extends ResourcePackProfile> ClientOnly<ResourcePackProfile> toClientResourcePackProfile(ResourcePackProfile.Factory factory) {
         Identifier id = ArtificeRegistry.ASSETS.getId(this);
         assert id != null;
-        ClientResourcePackProfile profile = new ArtificeResourcePackContainer(this.optional, this.visible, ResourcePackProfile.of(
+        ResourcePackProfile profile = new ArtificeResourcePackContainer(this.optional, this.visible, ResourcePackProfile.of(
                         id.toString(),
                         false, () -> this, factory,
                         this.optional ? ResourcePackProfile.InsertionPosition.TOP : ResourcePackProfile.InsertionPosition.BOTTOM,
@@ -329,12 +309,12 @@ public class ArtificeResourcePackImpl implements ArtificeResourcePack {
     }
 
     @Environment(EnvType.CLIENT)
-    public ArtificeResourcePackContainer getAssetsContainer(ResourcePackProfile.Factory<?> factory) {
+    public ArtificeResourcePackContainer getAssetsContainer(ResourcePackProfile.Factory factory) {
         return (ArtificeResourcePackContainer) toClientResourcePackProfile(factory).get();
     }
 
     @Override
-    public <T extends ResourcePackProfile> ResourcePackProfile toServerResourcePackProfile(ResourcePackProfile.Factory<T> factory) {
+    public <T extends ResourcePackProfile> ResourcePackProfile toServerResourcePackProfile(ResourcePackProfile.Factory factory) {
         Identifier id = ArtificeRegistry.DATA.getId(this);
         assert id != null;
         return ResourcePackProfile.of(
@@ -345,7 +325,7 @@ public class ArtificeResourcePackImpl implements ArtificeResourcePack {
         );
     }
 
-    public ResourcePackProfile getDataContainer(ResourcePackProfile.Factory<?> factory) {
+    public ResourcePackProfile getDataContainer(ResourcePackProfile.Factory factory) {
         return toServerResourcePackProfile(factory);
     }
 

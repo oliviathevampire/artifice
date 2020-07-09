@@ -1,6 +1,5 @@
 package com.swordglowsblue.artifice.test;
 
-import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.swordglowsblue.artifice.api.Artifice;
@@ -8,7 +7,6 @@ import com.swordglowsblue.artifice.api.ArtificeResourcePack;
 import com.swordglowsblue.artifice.api.builder.data.dimension.BiomeSourceBuilder;
 import com.swordglowsblue.artifice.api.builder.data.dimension.ChunkGeneratorTypeBuilder;
 import com.swordglowsblue.artifice.api.resource.StringResource;
-import com.swordglowsblue.artifice.api.util.Processor;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -23,15 +21,16 @@ import net.minecraft.tag.BlockTags;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
-import net.minecraft.world.*;
-import net.minecraft.world.biome.Biomes;
+import net.minecraft.world.BlockView;
+import net.minecraft.world.ChunkRegion;
+import net.minecraft.world.Heightmap;
+import net.minecraft.world.WorldAccess;
 import net.minecraft.world.biome.source.BiomeSource;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.gen.StructureAccessor;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.chunk.StructuresConfig;
-import net.minecraft.world.gen.chunk.SurfaceChunkGenerator;
 import net.minecraft.world.gen.chunk.VerticalBlockSample;
 import net.minecraft.world.gen.feature.StructureFeature;
 
@@ -85,7 +84,7 @@ public class ArtificeTestMod implements ModInitializer, ClientModInitializer {
                         layersBuilder.block("minecraft:stone").height(2);
                     }).addLayer(layersBuilder -> {
                         layersBuilder.block("minecraft:cobblestone").height(2);
-                    }).biome(Registry.BIOME.getId(Biomes.DARK_FOREST).toString())
+                    }).biome("minecraft:plains")
                             .structureManager(structureManagerBuilder -> {
                         structureManagerBuilder.addStructure(Registry.STRUCTURE_FEATURE.getId(StructureFeature.MINESHAFT).toString(),
                                 structureConfigBuilder -> {
