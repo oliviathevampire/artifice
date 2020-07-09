@@ -7,6 +7,9 @@ import com.swordglowsblue.artifice.api.builder.data.TagBuilder;
 import com.swordglowsblue.artifice.api.builder.data.dimension.DimensionBuilder;
 import com.swordglowsblue.artifice.api.builder.data.dimension.DimensionTypeBuilder;
 import com.swordglowsblue.artifice.api.builder.data.recipe.*;
+import com.swordglowsblue.artifice.api.builder.data.worldgen.*;
+import com.swordglowsblue.artifice.api.builder.data.worldgen.biome.BiomeBuilder;
+import com.swordglowsblue.artifice.api.builder.data.worldgen.features.trees.TreeFeatureBuilder;
 import com.swordglowsblue.artifice.api.resource.ArtificeResource;
 import com.swordglowsblue.artifice.api.util.Processor;
 import com.swordglowsblue.artifice.api.virtualpack.ArtificeResourcePackContainer;
@@ -14,6 +17,8 @@ import com.swordglowsblue.artifice.common.ClientOnly;
 import com.swordglowsblue.artifice.common.ClientResourcePackProfileLike;
 import com.swordglowsblue.artifice.common.ServerResourcePackProfileLike;
 import com.swordglowsblue.artifice.impl.ArtificeResourcePackImpl;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.resource.language.LanguageDefinition;
 import net.minecraft.resource.ResourcePack;
 import net.minecraft.resource.ResourcePackProfile;
@@ -246,6 +251,70 @@ public interface ArtificeResourcePack extends ResourcePack, ServerResourcePackPr
          * @param f  A callback which will be passed an {@link AdvancementBuilder} to create the advancement.
          */
         void addAdvancement(Identifier id, Processor<AdvancementBuilder> f);
+
+        /**
+         * Add a Biome with the given ID.
+         *
+         * @param id The ID of the biome, which will be converted into the correct path.
+         * @param f A callback which will be passed an {@link BiomeBuilder} to create the dimension.
+         */
+        void addBiome(Identifier id, Processor<BiomeBuilder> f);
+
+        /**
+         * Add a Carver with the given ID.
+         *
+         * @param id The ID of the carver, which will be converted into the correct path.
+         * @param f A callback which will be passed an {@link CarverBuilder} to create the carver .
+         */
+        void addConfiguredCarver(Identifier id, Processor<CarverBuilder> f);
+
+        /**
+         * Add a Configured Feature with the given ID.
+         *
+         * @param id The ID of the configured feature, which will be converted into the correct path.
+         * @param f A callback which will be passed an {@link FeatureBuilder} to create the configured feature config.
+         */
+        void addConfiguredFeature(Identifier id, Processor<FeatureBuilder> f);
+
+        /**
+         * Add a Configured Feature with the given ID.
+         *
+         * @param id The ID of the configured feature, which will be converted into the correct path.
+         * @param f A callback which will be passed an {@link TreeFeatureBuilder} to create the configured feature config.
+         */
+        void addTreeType(Identifier id, Processor<TreeFeatureBuilder> f);
+
+        /**
+         * Add a Configured Structure Feature with the given ID.
+         *
+         * @param id The ID of the configured structure feature, which will be converted into the correct path.
+         * @param f A callback which will be passed an {@link StructureFeatureBuilder} to create the configured structure feature config.
+         */
+        void addConfiguredStructureFeature(Identifier id, Processor<StructureFeatureBuilder> f);
+
+        /**
+         * Add a Surface Builder with the given ID.
+         *
+         * @param id The ID of the surface builder, which will be converted into the correct path.
+         * @param f A callback which will be passed an {@link SurfaceBuilderBuilder} to create the surface builder config.
+         */
+        void addConfiguredSurfaceBuilder(Identifier id, Processor<SurfaceBuilderBuilder> f);
+
+        /**
+         * Add a Processor List with the given ID.
+         *
+         * @param id The ID of the processor list, which will be converted into the correct path.
+         * @param f A callback which will be passed an {@link ProcessorListBuilder} to create the processor list.
+         */
+        void addProcessorList(Identifier id, Processor<ProcessorListBuilder> f);
+
+        /**
+         * Add a Template Pool with the given ID.
+         *
+         * @param id The ID of the template pool, which will be converted into the correct path.
+         * @param f A callback which will be passed an {@link TemplatePoolBuilder} to create the template pool.
+         */
+        void addTemplatePool(Identifier id, Processor<TemplatePoolBuilder> f);
 
         /**
          * Add a Dimension Type with the given ID.

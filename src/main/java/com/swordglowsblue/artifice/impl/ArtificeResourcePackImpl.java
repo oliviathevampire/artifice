@@ -14,6 +14,9 @@ import com.swordglowsblue.artifice.api.builder.data.TagBuilder;
 import com.swordglowsblue.artifice.api.builder.data.dimension.DimensionBuilder;
 import com.swordglowsblue.artifice.api.builder.data.dimension.DimensionTypeBuilder;
 import com.swordglowsblue.artifice.api.builder.data.recipe.*;
+import com.swordglowsblue.artifice.api.builder.data.worldgen.*;
+import com.swordglowsblue.artifice.api.builder.data.worldgen.biome.BiomeBuilder;
+import com.swordglowsblue.artifice.api.builder.data.worldgen.features.trees.TreeFeatureBuilder;
 import com.swordglowsblue.artifice.api.resource.ArtificeResource;
 import com.swordglowsblue.artifice.api.resource.JsonResource;
 import com.swordglowsblue.artifice.api.util.IdUtils;
@@ -159,6 +162,38 @@ public class ArtificeResourcePackImpl implements ArtificeResourcePack {
 
         public void addAdvancement(Identifier id, Processor<AdvancementBuilder> f) {
             this.add("advancements/", id, ".json", f, AdvancementBuilder::new);
+        }
+
+        public void addBiome(Identifier id, Processor<BiomeBuilder> f) {
+            this.add("worldgen/biome/" + id.getNamespace() + "/", new Identifier(id.getPath()), ".json", f, BiomeBuilder::new);
+        }
+
+        public void addConfiguredCarver(Identifier id, Processor<CarverBuilder> f) {
+            this.add("worldgen/configured_carver/" + id.getNamespace() + "/", new Identifier(id.getPath()), ".json", f, CarverBuilder::new);
+        }
+
+        public void addConfiguredFeature(Identifier id, Processor<FeatureBuilder> f) {
+            this.add("worldgen/configured_feature/" + id.getNamespace() + "/", new Identifier(id.getPath()), ".json", f, FeatureBuilder::new);
+        }
+
+        public void addTreeType(Identifier id, Processor<TreeFeatureBuilder> f) {
+            this.add("worldgen/configured_feature/" + id.getNamespace() + "/", new Identifier(id.getPath()), ".json", f, TreeFeatureBuilder::new);
+        }
+
+        public void addConfiguredStructureFeature(Identifier id, Processor<StructureFeatureBuilder> f) {
+            this.add("worldgen/configured_structure_feature/" + id.getNamespace() + "/", new Identifier(id.getPath()), ".json", f, StructureFeatureBuilder::new);
+        }
+
+        public void addConfiguredSurfaceBuilder(Identifier id, Processor<SurfaceBuilderBuilder> f) {
+            this.add("worldgen/configured_surface_builder/" + id.getNamespace() + "/", new Identifier(id.getPath()), ".json", f, SurfaceBuilderBuilder::new);
+        }
+
+        public void addProcessorList(Identifier id, Processor<ProcessorListBuilder> f) {
+            this.add("worldgen/processor_list/" + id.getNamespace() + "/", new Identifier(id.getPath()), ".json", f, ProcessorListBuilder::new);
+        }
+
+        public void addTemplatePool(Identifier id, Processor<TemplatePoolBuilder> f) {
+            this.add("worldgen/template_pool/" + id.getNamespace() + "/", new Identifier(id.getPath()), ".json", f, TemplatePoolBuilder::new);
         }
 
         public void addDimensionType(Identifier id, Processor<DimensionTypeBuilder> f) {

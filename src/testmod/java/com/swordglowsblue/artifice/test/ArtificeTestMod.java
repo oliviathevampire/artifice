@@ -25,14 +25,18 @@ import net.minecraft.world.BlockView;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.WorldAccess;
+import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.source.BiomeSource;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.dimension.DimensionType;
+import net.minecraft.world.gen.GenerationStep;
 import net.minecraft.world.gen.StructureAccessor;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.chunk.StructuresConfig;
 import net.minecraft.world.gen.chunk.VerticalBlockSample;
 import net.minecraft.world.gen.feature.StructureFeature;
+
+import java.io.IOException;
 
 public class ArtificeTestMod implements ModInitializer, ClientModInitializer {
     private static Identifier id(String name) { return new Identifier("artifice", name); }
@@ -70,6 +74,107 @@ public class ArtificeTestMod implements ModInitializer, ClientModInitializer {
                             "  }\n" +
                             "}"));
 
+
+            /*pack.addTreeType(id("basalt_tree"), treeFeatureBuilder -> {
+                treeFeatureBuilder.name("minecraft:tree");
+                treeFeatureBuilder.heightmap("OCEAN_FLOOR");
+                treeFeatureBuilder.ignoreVines(true);
+                treeFeatureBuilder.maxWaterDepth(0);
+                treeFeatureBuilder.minimumSize(minimumSizeBuilder -> {
+                    minimumSizeBuilder.limit(1);
+                    minimumSizeBuilder.lowerSize(0);
+                    minimumSizeBuilder.upperSize(2);
+                    minimumSizeBuilder.type("minecraft:two_layers_feature_size");
+                });
+                treeFeatureBuilder.trunkProvider(trunkProviderBuilder -> {
+                    trunkProviderBuilder.state(stateBuilder -> {
+                        stateBuilder.axis("y");
+                        stateBuilder.name("minecraft:basalt");
+                    });
+                    trunkProviderBuilder.type("minecraft:simple_state_provider");
+                });
+                treeFeatureBuilder.leavesProvider(leavesProviderBuilder -> {
+                    leavesProviderBuilder.state(stateBuilder -> stateBuilder.name("minecraft:blackstone"));
+                    leavesProviderBuilder.type("minecraft:simple_state_provider");
+                });
+            });*/
+
+            pack.addTreeType(id("basalt_tree"), treeFeatureBuilder -> {
+                treeFeatureBuilder.name("minecraft:tree");
+                treeFeatureBuilder.heightmap("OCEAN_FLOOR");
+                treeFeatureBuilder.ignoreVines(true);
+                treeFeatureBuilder.maxWaterDepth(0);
+                treeFeatureBuilder.minimumSize(minimumSizeBuilder -> {
+                    minimumSizeBuilder.limit(1);
+                    minimumSizeBuilder.lowerSize(0);
+                    minimumSizeBuilder.upperSize(2);
+                    minimumSizeBuilder.type("minecraft:two_layers_feature_size");
+                });
+                treeFeatureBuilder.trunkProvider(trunkProviderBuilder -> {
+                    trunkProviderBuilder.state(stateBuilder -> {
+                        stateBuilder.axis("y");
+                        stateBuilder.name("minecraft:basalt");
+                    });
+                    trunkProviderBuilder.type("minecraft:simple_state_provider");
+                });
+                treeFeatureBuilder.leavesProvider(leavesProviderBuilder -> {
+                    leavesProviderBuilder.state(stateBuilder -> stateBuilder.name("minecraft:blackstone"));
+                    leavesProviderBuilder.type("minecraft:simple_state_provider");
+                });
+                treeFeatureBuilder.foliagePlacer(foliagePlacerBuilder -> {
+                   foliagePlacerBuilder.radius(2);
+                   foliagePlacerBuilder.offset(0);
+                   foliagePlacerBuilder.height(3);
+                   foliagePlacerBuilder.type("minecraft:blob_foliage_placer");
+                });
+                treeFeatureBuilder.trunkPlacer(trunkPlacerBuilder -> {
+                    trunkPlacerBuilder.baseHeight(5);
+                    trunkPlacerBuilder.heightRandA(2);
+                    trunkPlacerBuilder.heightRandB(0);
+                    trunkPlacerBuilder.type("minecraft:straight_trunk_placer");
+                });
+            });
+
+            pack.addBiome(id("blue_orchid_fields"), biomeBuilder -> {
+                biomeBuilder.surfaceBuilder("minecraft:grass");
+                biomeBuilder.precipitation(Biome.Precipitation.RAIN);
+                biomeBuilder.category(Biome.Category.PLAINS);
+                biomeBuilder.depth(0.125F);
+                biomeBuilder.scale(0.05F);
+                biomeBuilder.temperature(0.8F);
+                biomeBuilder.downfall(0.4F);
+                biomeBuilder.skyColor(4159204);
+                biomeBuilder.effects(biomeEffectsBuilder -> {
+                    biomeEffectsBuilder.waterColor(4159204);
+                    biomeEffectsBuilder.waterFogColor(329011);
+                    biomeEffectsBuilder.fogColor(12638463);
+                });
+                biomeBuilder.addAirCarvers(id("test_carver").toString());
+                biomeBuilder.addFeaturesByStep(GenerationStep.Feature.VEGETAL_DECORATION, id("swamp_tree").toString());
+                biomeBuilder.addFeaturesByStep(GenerationStep.Feature.LAKES, "minecraft:lake_water", "minecraft:lake_lava");
+                biomeBuilder.addFeaturesByStep(GenerationStep.Feature.UNDERGROUND_STRUCTURES, "minecraft:monster_room");
+                biomeBuilder.addFeaturesByStep(GenerationStep.Feature.UNDERGROUND_ORES,
+                        "minecraft:ore_dirt",
+                        "minecraft:ore_gravel",
+                        "minecraft:ore_granite",
+                        "minecraft:ore_diorite",
+                        "minecraft:ore_andesite",
+                        "minecraft:ore_coal",
+                        "minecraft:ore_iron",
+                        "minecraft:ore_gold",
+                        "minecraft:ore_redstone",
+                        "minecraft:ore_diamond",
+                        "minecraft:ore_lapis",
+                        "minecraft:disk_sand",
+                        "minecraft:disk_clay",
+                        "minecraft:disk_gravel"
+                );
+            });
+
+            pack.addConfiguredCarver(id("test_carver"), carverBuilder -> {
+                carverBuilder.probability(0.9F).name(new Identifier("cave").toString());
+            });
+
             pack.addDimensionType(testDimension.getValue(), dimensionTypeBuilder -> {
                 dimensionTypeBuilder
                         .natural(true).hasRaids(false).respawnAnchorWorks(false).bedWorks(false).piglinSafe(false)
@@ -104,11 +209,16 @@ public class ArtificeTestMod implements ModInitializer, ClientModInitializer {
             pack.addDimension(id("test_dimension_custom"), dimensionBuilder -> {
                 dimensionBuilder.dimensionType(testDimensionCustom.getValue()).generator(testChunkGeneratorTypeBuilder -> {
                     testChunkGeneratorTypeBuilder.testBool(true).biomeSource(biomeSourceBuilder -> {
-                        biomeSourceBuilder.biome("minecraft:taiga");
+                        biomeSourceBuilder.biome(id("test_biome").toString());
                     }, new BiomeSourceBuilder.FixedBiomeSourceBuilder());
                 }, new TestChunkGeneratorTypeBuilder());
             });
         });
+        try {
+            dataPack.dumpResources("testing");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Environment(EnvType.CLIENT)
@@ -144,9 +254,13 @@ public class ArtificeTestMod implements ModInitializer, ClientModInitializer {
                 .entry("block.artifice.test_block", "Artifice Test Block in custom lang"));
         });
 
-        Artifice.registerAssets(id("testmod2"), pack -> {
-            pack.setOptional();
-        });
+        try {
+            resourcePack.dumpResources("testing_client");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        Artifice.registerAssets(id("testmod2"), ArtificeResourcePack.ClientResourcePackBuilder::setOptional);
     }
 
     public static class TestChunkGenerator extends ChunkGenerator {
