@@ -1,16 +1,21 @@
 package com.swordglowsblue.artifice.mixin;
 
 import com.swordglowsblue.artifice.api.virtualpack.ArtificeResourcePackContainer;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.resource.ResourcePackManager;
+import com.swordglowsblue.artifice.impl.ArtificeAssetsResourcePackProvider;
+import com.swordglowsblue.artifice.impl.ArtificeDataResourcePackProvider;
 import net.minecraft.resource.ResourcePackProfile;
+import org.apache.commons.lang3.ArrayUtils;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
-import java.util.Collection;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.resource.ResourcePackManager;
+import net.minecraft.resource.ResourcePackProvider;
+
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 
 @Environment(EnvType.CLIENT)
 @Mixin(MinecraftClient.class)
