@@ -6,7 +6,7 @@
 A fork of a Minecraft 1.14 library mod for 1.15, for programmatically generated resource files.
 
 - [API Javadoc](https://htmlpreview.github.io/?https://github.com/artificemc/artifice/blob/master/doc/index.html)
-- [Project Wiki](https://github.com/swordglowsblue/artifice/wiki)
+- [Project Wiki](https://github.com/natanfudge/artifice/blob/1.16/src/testmod/java/com/swordglowsblue/artifice/test/ArtificeTestMod.java)
 
 Installation: 
 
@@ -17,7 +17,7 @@ repositories {
 }
 
 dependencies {
-  modImplementation "com.lettuce.fudge:artifice:0.7.2+1.16-pre2"
-  include "com.lettuce.fudge:artifice:0.7.2+1.16-pre2"
+  modImplementation "com.lettuce.fudge:artifice:0.8.1+1.16.1"
+  include "com.lettuce.fudge:artifice:0.8.1+1.16.1"
 }
 ```

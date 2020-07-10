@@ -6,11 +6,11 @@
     "defaultRequire": 1
   },
   "mixins": [
-    "MixinExtendedResourcePackEntryInfo",
-    "MixinResourcePackEntry",
-    "MixinResourcePackManager"
+    "MixinResourcePackManager",
+    "MixinResourcePackOrganizer"
   ],
   "client": [
-    "MixinMinecraftClient"
+    "MixinMinecraftClient",
+    "MixinResourcePackEntry"
   ]
 }

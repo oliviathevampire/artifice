@@ -4,7 +4,14 @@ import com.swordglowsblue.artifice.api.builder.assets.*;
 import com.swordglowsblue.artifice.api.builder.data.AdvancementBuilder;
 import com.swordglowsblue.artifice.api.builder.data.LootTableBuilder;
 import com.swordglowsblue.artifice.api.builder.data.TagBuilder;
+import com.swordglowsblue.artifice.api.builder.data.dimension.DimensionBuilder;
+import com.swordglowsblue.artifice.api.builder.data.dimension.DimensionTypeBuilder;
 import com.swordglowsblue.artifice.api.builder.data.recipe.*;
+import com.swordglowsblue.artifice.api.builder.data.worldgen.*;
+import com.swordglowsblue.artifice.api.builder.data.worldgen.biome.BiomeBuilder;
+import com.swordglowsblue.artifice.api.builder.data.worldgen.configured.ConfiguredCarverBuilder;
+import com.swordglowsblue.artifice.api.builder.data.worldgen.configured.ConfiguredSurfaceBuilder;
+import com.swordglowsblue.artifice.api.builder.data.worldgen.features.trees.TreeFeatureBuilder;
 import com.swordglowsblue.artifice.api.resource.ArtificeResource;
 import com.swordglowsblue.artifice.api.util.Processor;
 import com.swordglowsblue.artifice.api.virtualpack.ArtificeResourcePackContainer;
@@ -14,7 +21,6 @@ import com.swordglowsblue.artifice.common.ServerResourcePackProfileLike;
 import com.swordglowsblue.artifice.impl.ArtificeResourcePackImpl;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.resource.ClientResourcePackProfile;
 import net.minecraft.client.resource.language.LanguageDefinition;
 import net.minecraft.resource.ResourcePack;
 import net.minecraft.resource.ResourcePackProfile;
@@ -23,6 +29,7 @@ import net.minecraft.resource.VanillaDataPackProvider;
 import net.minecraft.util.Identifier;
 
 import java.io.IOException;
+import java.util.function.Consumer;
 
 /**
  * A resource pack containing Artifice-based resources. May be used for resource generation with
@@ -59,12 +66,12 @@ public interface ArtificeResourcePack extends ResourcePack, ServerResourcePackPr
     /**
      * Create a client-side {@link ResourcePackProfile} for this pack.
      *
-     * @param factory The factory function passed to {@link VanillaDataPackProvider#register(java.util.function.Consumer, ResourcePackProfile.class_5351)}.
+     * @param factory The factory function passed to {@link VanillaDataPackProvider#register(Consumer, ResourcePackProfile.Factory)}.
      * @return The created container.
      */
     @Override
     @Environment(EnvType.CLIENT)
-    default <T extends ResourcePackProfile> ClientOnly<ClientResourcePackProfile> toClientResourcePackProfile(ResourcePackProfile.class_5351<T> factory) {
+    default <T extends ResourcePackProfile> ClientOnly<ResourcePackProfile> toClientResourcePackProfile(ResourcePackProfile.Factory factory) {
         return new ClientOnly<>(getAssetsContainer(factory));
     }
 
@@ -75,19 +82,19 @@ public interface ArtificeResourcePack extends ResourcePack, ServerResourcePackPr
      * @return The created container.
      */
     @Override
-    default <T extends ResourcePackProfile> ResourcePackProfile toServerResourcePackProfile(ResourcePackProfile.class_5351<T> factory) {
+    default <T extends ResourcePackProfile> ResourcePackProfile toServerResourcePackProfile(ResourcePackProfile.Factory factory) {
         return getDataContainer(factory);
     }
 
     /**
-     * @param factory The factory function passed to {@link VanillaDataPackProvider#register(java.util.function.Consumer, ResourcePackProfile.class_5351)}.
+     * @param factory The factory function passed to {@link VanillaDataPackProvider#register(Consumer, ResourcePackProfile.Factory)}.
      * @return The created container.
      * @deprecated use {@link ArtificeResourcePack#toClientResourcePackProfile(ResourcePackProfile.class_5351)}
      * Create a client-side {@link ResourcePackProfile} for this pack.
      */
     @Environment(EnvType.CLIENT)
     @Deprecated
-    ArtificeResourcePackContainer getAssetsContainer(ResourcePackProfile.class_5351<?> factory);
+    ArtificeResourcePackContainer getAssetsContainer(ResourcePackProfile.Factory factory);
 
     /**
      * @param factory The factory function passed to {@link VanillaDataPackProvider#register}.
@@ -96,7 +103,7 @@ public interface ArtificeResourcePack extends ResourcePack, ServerResourcePackPr
      * Create a server-side {@link ResourcePackProfile} for this pack.
      */
     @Deprecated
-    ResourcePackProfile getDataContainer(ResourcePackProfile.class_5351<?> factory);
+    ResourcePackProfile getDataContainer(ResourcePackProfile.Factory factory);
 
     /**
      * Create a new client-side {@link ArtificeResourcePack} and register resources using the given callback.
@@ -246,6 +253,87 @@ public interface ArtificeResourcePack extends ResourcePack, ServerResourcePackPr
          * @param f  A callback which will be passed an {@link AdvancementBuilder} to create the advancement.
          */
         void addAdvancement(Identifier id, Processor<AdvancementBuilder> f);
+
+        /**
+         * Add a Biome with the given ID.
+         *
+         * @param id The ID of the biome, which will be converted into the correct path.
+         * @param f A callback which will be passed an {@link BiomeBuilder} to create the dimension.
+         */
+        void addBiome(Identifier id, Processor<BiomeBuilder> f);
+
+        /**
+         * Add a ConfiguredSurfaceBuilder with the given ID.
+         *
+         * @param id The ID of the configured surface builder, which will be converted into the correct path.
+         * @param f A callback which will be passed an {@link ConfiguredSurfaceBuilder}
+         *          to create the configured surface builder .
+         */
+        void addConfiguredSurfaceBuilder(Identifier id, Processor<ConfiguredSurfaceBuilder> f);
+
+        /**
+         * Add a Carver with the given ID.
+         *
+         * @param id The ID of the carver, which will be converted into the correct path.
+         * @param f A callback which will be passed an {@link ConfiguredCarverBuilder} to create the carver .
+         */
+        void addConfiguredCarver(Identifier id, Processor<ConfiguredCarverBuilder> f);
+
+        /**
+         * Add a Configured Feature with the given ID.
+         *
+         * @param id The ID of the configured feature, which will be converted into the correct path.
+         * @param f A callback which will be passed an {@link FeatureBuilder} to create the configured feature config.
+         */
+        void addConfiguredFeature(Identifier id, Processor<FeatureBuilder> f);
+
+        /**
+         * Add a Configured Feature with the given ID.
+         *
+         * @param id The ID of the configured feature, which will be converted into the correct path.
+         * @param f A callback which will be passed an {@link TreeFeatureBuilder} to create the configured feature config.
+         */
+        void addTreeType(Identifier id, Processor<TreeFeatureBuilder> f);
+
+        /**
+         * Add a Configured Structure Feature with the given ID.
+         *
+         * @param id The ID of the configured structure feature, which will be converted into the correct path.
+         * @param f A callback which will be passed an {@link StructureFeatureBuilder} to create the configured structure feature config.
+         */
+        void addConfiguredStructureFeature(Identifier id, Processor<StructureFeatureBuilder> f);
+
+        /**
+         * Add a Processor List with the given ID.
+         *
+         * @param id The ID of the processor list, which will be converted into the correct path.
+         * @param f A callback which will be passed an {@link ProcessorListBuilder} to create the processor list.
+         */
+        void addProcessorList(Identifier id, Processor<ProcessorListBuilder> f);
+
+        /**
+         * Add a Template Pool with the given ID.
+         *
+         * @param id The ID of the template pool, which will be converted into the correct path.
+         * @param f A callback which will be passed an {@link TemplatePoolBuilder} to create the template pool.
+         */
+        void addTemplatePool(Identifier id, Processor<TemplatePoolBuilder> f);
+
+        /**
+         * Add a Dimension Type with the given ID.
+         *
+         * @param id The ID of the dimension type, which will be converted into the correct path.
+         * @param f A callback which will be passed an {@link DimensionTypeBuilder} to create the dimension type.
+         */
+        void addDimensionType(Identifier id, Processor<DimensionTypeBuilder> f);
+
+        /**
+         * Add a Dimension with the given ID.
+         *
+         * @param id The ID of the dimension, which will be converted into the correct path.
+         * @param f A callback which will be passed an {@link com.swordglowsblue.artifice.api.builder.data.dimension.DimensionBuilder} to create the dimension .
+         */
+        void addDimension(Identifier id, Processor<DimensionBuilder> f);
 
         /**
          * Add a loot table with the given ID.

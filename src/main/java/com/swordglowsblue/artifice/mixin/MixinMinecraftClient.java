@@ -1,17 +1,13 @@
 package com.swordglowsblue.artifice.mixin;
 
 import com.swordglowsblue.artifice.api.virtualpack.ArtificeResourcePackContainer;
-import com.swordglowsblue.artifice.impl.ArtificeAssetsResourcePackProvider;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.resource.ClientResourcePackProfile;
 import net.minecraft.resource.ResourcePackManager;
-import net.minecraft.resource.ResourcePackProvider;
-import org.apache.commons.lang3.ArrayUtils;
+import net.minecraft.resource.ResourcePackProfile;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
 import java.util.Collection;
@@ -27,9 +23,9 @@ public abstract class MixinMinecraftClient {
 
 	@Redirect(method = "<init>", at = @At(value = "INVOKE",
 					target = "Lnet/minecraft/resource/ResourcePackManager;scanPacks()V"))
-	private void enableNonOptional(ResourcePackManager<ClientResourcePackProfile> resourcePackManager) {
-		Collection<ClientResourcePackProfile> enabled = resourcePackManager.getEnabledProfiles();
-		for (ClientResourcePackProfile profile : resourcePackManager.getProfiles()) {
+	private void enableNonOptional(ResourcePackManager resourcePackManager) {
+		Collection<ResourcePackProfile> enabled = resourcePackManager.getEnabledProfiles();
+		for (ResourcePackProfile profile : resourcePackManager.getProfiles()) {
 			if (profile instanceof ArtificeResourcePackContainer && !((ArtificeResourcePackContainer) profile).isOptional()) {
 				if (!enabled.contains(profile)) enabled.add(profile);
 			}

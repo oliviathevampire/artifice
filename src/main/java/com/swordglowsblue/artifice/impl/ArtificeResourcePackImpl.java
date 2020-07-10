@@ -11,7 +11,14 @@ import com.swordglowsblue.artifice.api.builder.assets.*;
 import com.swordglowsblue.artifice.api.builder.data.AdvancementBuilder;
 import com.swordglowsblue.artifice.api.builder.data.LootTableBuilder;
 import com.swordglowsblue.artifice.api.builder.data.TagBuilder;
+import com.swordglowsblue.artifice.api.builder.data.dimension.DimensionBuilder;
+import com.swordglowsblue.artifice.api.builder.data.dimension.DimensionTypeBuilder;
 import com.swordglowsblue.artifice.api.builder.data.recipe.*;
+import com.swordglowsblue.artifice.api.builder.data.worldgen.*;
+import com.swordglowsblue.artifice.api.builder.data.worldgen.biome.BiomeBuilder;
+import com.swordglowsblue.artifice.api.builder.data.worldgen.configured.ConfiguredCarverBuilder;
+import com.swordglowsblue.artifice.api.builder.data.worldgen.configured.ConfiguredSurfaceBuilder;
+import com.swordglowsblue.artifice.api.builder.data.worldgen.features.trees.TreeFeatureBuilder;
 import com.swordglowsblue.artifice.api.resource.ArtificeResource;
 import com.swordglowsblue.artifice.api.resource.JsonResource;
 import com.swordglowsblue.artifice.api.util.IdUtils;
@@ -22,9 +29,8 @@ import com.swordglowsblue.artifice.common.ClientOnly;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.api.EnvironmentInterface;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.SharedConstants;
-import net.minecraft.class_5352;
-import net.minecraft.client.resource.ClientResourcePackProfile;
 import net.minecraft.client.resource.language.LanguageDefinition;
 import net.minecraft.resource.ResourcePackProfile;
 import net.minecraft.resource.ResourcePackSource;
@@ -34,10 +40,11 @@ import net.minecraft.util.Identifier;
 import org.apache.commons.io.input.NullInputStream;
 import org.apache.logging.log4j.LogManager;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.fabricmc.api.EnvironmentInterface;
-import net.fabricmc.loader.api.FabricLoader;
+import java.io.*;
+import java.util.*;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 public class ArtificeResourcePackImpl implements ArtificeResourcePack {
     private final ResourceType type;
@@ -157,6 +164,46 @@ public class ArtificeResourcePackImpl implements ArtificeResourcePack {
 
         public void addAdvancement(Identifier id, Processor<AdvancementBuilder> f) {
             this.add("advancements/", id, ".json", f, AdvancementBuilder::new);
+        }
+
+        public void addBiome(Identifier id, Processor<BiomeBuilder> f) {
+            this.add("worldgen/biome/" + id.getNamespace() + "/", new Identifier(id.getPath()), ".json", f, BiomeBuilder::new);
+        }
+
+        public void addConfiguredSurfaceBuilder(Identifier id, Processor<ConfiguredSurfaceBuilder> f) {
+            this.add("worldgen/configured_surface_builder/" + id.getNamespace() + "/", new Identifier(id.getPath()), ".json", f, ConfiguredSurfaceBuilder::new);
+        }
+
+        public void addConfiguredCarver(Identifier id, Processor<ConfiguredCarverBuilder> f) {
+            this.add("worldgen/configured_carver/" + id.getNamespace() + "/", new Identifier(id.getPath()), ".json", f, ConfiguredCarverBuilder::new);
+        }
+
+        public void addConfiguredFeature(Identifier id, Processor<FeatureBuilder> f) {
+            this.add("worldgen/configured_feature/" + id.getNamespace() + "/", new Identifier(id.getPath()), ".json", f, FeatureBuilder::new);
+        }
+
+        public void addTreeType(Identifier id, Processor<TreeFeatureBuilder> f) {
+            this.add("worldgen/configured_feature/" + id.getNamespace() + "/", new Identifier(id.getPath()), ".json", f, TreeFeatureBuilder::new);
+        }
+
+        public void addConfiguredStructureFeature(Identifier id, Processor<StructureFeatureBuilder> f) {
+            this.add("worldgen/configured_structure_feature/" + id.getNamespace() + "/", new Identifier(id.getPath()), ".json", f, StructureFeatureBuilder::new);
+        }
+
+        public void addProcessorList(Identifier id, Processor<ProcessorListBuilder> f) {
+            this.add("worldgen/processor_list/" + id.getNamespace() + "/", new Identifier(id.getPath()), ".json", f, ProcessorListBuilder::new);
+        }
+
+        public void addTemplatePool(Identifier id, Processor<TemplatePoolBuilder> f) {
+            this.add("worldgen/template_pool/" + id.getNamespace() + "/", new Identifier(id.getPath()), ".json", f, TemplatePoolBuilder::new);
+        }
+
+        public void addDimensionType(Identifier id, Processor<DimensionTypeBuilder> f) {
+            this.add("dimension_type/" + id.getNamespace() + "/", new Identifier(id.getPath()), ".json", f, DimensionTypeBuilder::new);
+        }
+
+        public void addDimension(Identifier id, Processor<DimensionBuilder> f) {
+            this.add("dimension/" + id.getNamespace() + "/", new Identifier(id.getPath()), ".json", f, DimensionBuilder::new);
         }
 
         public void addLootTable(Identifier id, Processor<LootTableBuilder> f) {
@@ -285,37 +332,37 @@ public class ArtificeResourcePackImpl implements ArtificeResourcePack {
 
     @Override
     @Environment(EnvType.CLIENT)
-    public <T extends ResourcePackProfile> ClientOnly<ClientResourcePackProfile> toClientResourcePackProfile(ResourcePackProfile.class_5351<T> factory) {
+    public <T extends ResourcePackProfile> ClientOnly<ResourcePackProfile> toClientResourcePackProfile(ResourcePackProfile.Factory factory) {
         Identifier id = ArtificeRegistry.ASSETS.getId(this);
         assert id != null;
-        ClientResourcePackProfile profile = new ArtificeResourcePackContainer(this.optional, this.visible, ResourcePackProfile.of(
-                        id.toString(),
-                        false, () -> this, factory,
-                        this.optional ? ResourcePackProfile.InsertionPosition.TOP : ResourcePackProfile.InsertionPosition.BOTTOM,
-                        ARTIFICE_RESOURCE_PACK_SOURCE
-        ));
+        ResourcePackProfile profile = new ArtificeResourcePackContainer(this.optional, this.visible, Objects.requireNonNull(ResourcePackProfile.of(
+                id.toString(),
+                true, () -> this, factory,
+                this.optional ? ResourcePackProfile.InsertionPosition.TOP : ResourcePackProfile.InsertionPosition.BOTTOM,
+                ARTIFICE_RESOURCE_PACK_SOURCE
+        )));
 
         return new ClientOnly<>(profile);
     }
 
     @Environment(EnvType.CLIENT)
-    public ArtificeResourcePackContainer getAssetsContainer(ResourcePackProfile.class_5351<?> factory) {
+    public ArtificeResourcePackContainer getAssetsContainer(ResourcePackProfile.Factory factory) {
         return (ArtificeResourcePackContainer) toClientResourcePackProfile(factory).get();
     }
 
     @Override
-    public <T extends ResourcePackProfile> ResourcePackProfile toServerResourcePackProfile(ResourcePackProfile.class_5351<T> factory) {
+    public <T extends ResourcePackProfile> ResourcePackProfile toServerResourcePackProfile(ResourcePackProfile.Factory factory) {
         Identifier id = ArtificeRegistry.DATA.getId(this);
         assert id != null;
         return ResourcePackProfile.of(
                         id.toString(),
-                        false, () -> this, factory,
+                 true, () -> this, factory,
                         ResourcePackProfile.InsertionPosition.BOTTOM,
                         ARTIFICE_RESOURCE_PACK_SOURCE
         );
     }
 
-    public ResourcePackProfile getDataContainer(ResourcePackProfile.class_5351<?> factory) {
+    public ResourcePackProfile getDataContainer(ResourcePackProfile.Factory factory) {
         return toServerResourcePackProfile(factory);
     }
 
