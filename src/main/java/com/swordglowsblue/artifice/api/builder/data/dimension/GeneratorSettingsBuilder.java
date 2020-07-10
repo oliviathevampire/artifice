@@ -2,6 +2,7 @@ package com.swordglowsblue.artifice.api.builder.data.dimension;
 
 import com.google.gson.JsonObject;
 import com.swordglowsblue.artifice.api.builder.TypedJsonBuilder;
+import com.swordglowsblue.artifice.api.builder.data.BlockStateDataBuilder;
 import com.swordglowsblue.artifice.api.util.Processor;
 
 public class GeneratorSettingsBuilder extends TypedJsonBuilder<JsonObject> {
@@ -15,6 +16,8 @@ public class GeneratorSettingsBuilder extends TypedJsonBuilder<JsonObject> {
      * @return
      */
     public GeneratorSettingsBuilder bedrockRoofPosition(int bedrockRoofPosition) {
+        if (bedrockRoofPosition > 276) throw new IllegalArgumentException("bedrockRoofPosition can't be higher than 276! Found " + bedrockRoofPosition);
+        if (bedrockRoofPosition < -20) throw new IllegalArgumentException("bedrockRoofPosition can't be smaller than -20! Found " + bedrockRoofPosition);
         this.root.addProperty("bedrock_roof_position", bedrockRoofPosition);
         return this;
     }
@@ -25,6 +28,8 @@ public class GeneratorSettingsBuilder extends TypedJsonBuilder<JsonObject> {
      * @return
      */
     public GeneratorSettingsBuilder bedrockFloorPosition(int bedrockFloorPosition) {
+        if (bedrockFloorPosition > 276) throw new IllegalArgumentException("bedrockFloorPosition can't be higher than 276! Found " + bedrockFloorPosition);
+        if (bedrockFloorPosition < -20) throw new IllegalArgumentException("bedrockFloorPosition can't be smaller than -20! Found " + bedrockFloorPosition);
         this.root.addProperty("bedrock_floor_position", bedrockFloorPosition);
         return this;
     }
@@ -35,6 +40,8 @@ public class GeneratorSettingsBuilder extends TypedJsonBuilder<JsonObject> {
      * @return
      */
     public GeneratorSettingsBuilder seaLevel(int seaLevel) {
+        if (seaLevel > 255) throw new IllegalArgumentException("Sealevel can't be higher than 255! Found " + seaLevel);
+        if (seaLevel < 0) throw new IllegalArgumentException("Sealevel can't be smaller than 0! Found " + seaLevel);
         this.root.addProperty("sea_level", seaLevel);
         return this;
     }
@@ -64,8 +71,8 @@ public class GeneratorSettingsBuilder extends TypedJsonBuilder<JsonObject> {
      * @param blockStateBuilderProcessor
      * @return
      */
-    public GeneratorSettingsBuilder setBlockState(String id, Processor<BlockStateBuilder> blockStateBuilderProcessor) {
-        with(id, JsonObject::new, jsonObject -> blockStateBuilderProcessor.process(new BlockStateBuilder()).buildTo(jsonObject));
+    public GeneratorSettingsBuilder setBlockState(String id, Processor<BlockStateDataBuilder> blockStateBuilderProcessor) {
+        with(id, JsonObject::new, jsonObject -> blockStateBuilderProcessor.process(new BlockStateDataBuilder()).buildTo(jsonObject));
         return this;
     }
 
@@ -74,7 +81,7 @@ public class GeneratorSettingsBuilder extends TypedJsonBuilder<JsonObject> {
      * @param blockStateBuilderProcessor
      * @return
      */
-    public GeneratorSettingsBuilder defaultBlock(Processor<BlockStateBuilder> blockStateBuilderProcessor) {
+    public GeneratorSettingsBuilder defaultBlock(Processor<BlockStateDataBuilder> blockStateBuilderProcessor) {
         return this.setBlockState("default_block", blockStateBuilderProcessor);
     }
 
@@ -83,7 +90,7 @@ public class GeneratorSettingsBuilder extends TypedJsonBuilder<JsonObject> {
      * @param blockStateBuilderProcessor
      * @return
      */
-    public GeneratorSettingsBuilder defaultFluid(Processor<BlockStateBuilder> blockStateBuilderProcessor) {
+    public GeneratorSettingsBuilder defaultFluid(Processor<BlockStateDataBuilder> blockStateBuilderProcessor) {
         return this.setBlockState("default_fluid", blockStateBuilderProcessor);
     }
 
@@ -97,35 +104,4 @@ public class GeneratorSettingsBuilder extends TypedJsonBuilder<JsonObject> {
         return this;
     }
 
-
-    public static class BlockStateBuilder extends TypedJsonBuilder<JsonObject> {
-
-        private JsonObject jsonObject = new JsonObject();
-
-        protected BlockStateBuilder() {
-            super(new JsonObject(), j->j);
-        }
-
-        /**
-         * Set the id of the block.
-         * @param id
-         * @return
-         */
-        public BlockStateBuilder name(String id) {
-            this.root.addProperty("Name", id);
-            return this;
-        }
-
-        /**
-         * Set a property to a state.
-         * @param property
-         * @param state
-         * @return
-         */
-        public BlockStateBuilder setProperty(String property, String state) {
-            this.jsonObject.addProperty(property, state);
-            this.root.add("Properties", this.jsonObject);
-            return this;
-        }
-    }
 }

@@ -16,6 +16,8 @@ import com.swordglowsblue.artifice.api.builder.data.dimension.DimensionTypeBuild
 import com.swordglowsblue.artifice.api.builder.data.recipe.*;
 import com.swordglowsblue.artifice.api.builder.data.worldgen.*;
 import com.swordglowsblue.artifice.api.builder.data.worldgen.biome.BiomeBuilder;
+import com.swordglowsblue.artifice.api.builder.data.worldgen.configured.ConfiguredCarverBuilder;
+import com.swordglowsblue.artifice.api.builder.data.worldgen.configured.ConfiguredSurfaceBuilder;
 import com.swordglowsblue.artifice.api.builder.data.worldgen.features.trees.TreeFeatureBuilder;
 import com.swordglowsblue.artifice.api.resource.ArtificeResource;
 import com.swordglowsblue.artifice.api.resource.JsonResource;
@@ -168,8 +170,12 @@ public class ArtificeResourcePackImpl implements ArtificeResourcePack {
             this.add("worldgen/biome/" + id.getNamespace() + "/", new Identifier(id.getPath()), ".json", f, BiomeBuilder::new);
         }
 
-        public void addConfiguredCarver(Identifier id, Processor<CarverBuilder> f) {
-            this.add("worldgen/configured_carver/" + id.getNamespace() + "/", new Identifier(id.getPath()), ".json", f, CarverBuilder::new);
+        public void addConfiguredSurfaceBuilder(Identifier id, Processor<ConfiguredSurfaceBuilder> f) {
+            this.add("worldgen/configured_surface_builder/" + id.getNamespace() + "/", new Identifier(id.getPath()), ".json", f, ConfiguredSurfaceBuilder::new);
+        }
+
+        public void addConfiguredCarver(Identifier id, Processor<ConfiguredCarverBuilder> f) {
+            this.add("worldgen/configured_carver/" + id.getNamespace() + "/", new Identifier(id.getPath()), ".json", f, ConfiguredCarverBuilder::new);
         }
 
         public void addConfiguredFeature(Identifier id, Processor<FeatureBuilder> f) {
@@ -182,10 +188,6 @@ public class ArtificeResourcePackImpl implements ArtificeResourcePack {
 
         public void addConfiguredStructureFeature(Identifier id, Processor<StructureFeatureBuilder> f) {
             this.add("worldgen/configured_structure_feature/" + id.getNamespace() + "/", new Identifier(id.getPath()), ".json", f, StructureFeatureBuilder::new);
-        }
-
-        public void addConfiguredSurfaceBuilder(Identifier id, Processor<SurfaceBuilderBuilder> f) {
-            this.add("worldgen/configured_surface_builder/" + id.getNamespace() + "/", new Identifier(id.getPath()), ".json", f, SurfaceBuilderBuilder::new);
         }
 
         public void addProcessorList(Identifier id, Processor<ProcessorListBuilder> f) {
@@ -333,12 +335,12 @@ public class ArtificeResourcePackImpl implements ArtificeResourcePack {
     public <T extends ResourcePackProfile> ClientOnly<ResourcePackProfile> toClientResourcePackProfile(ResourcePackProfile.Factory factory) {
         Identifier id = ArtificeRegistry.ASSETS.getId(this);
         assert id != null;
-        ResourcePackProfile profile = new ArtificeResourcePackContainer(this.optional, this.visible, ResourcePackProfile.of(
-                        id.toString(),
-                        false, () -> this, factory,
-                        this.optional ? ResourcePackProfile.InsertionPosition.TOP : ResourcePackProfile.InsertionPosition.BOTTOM,
-                        ARTIFICE_RESOURCE_PACK_SOURCE
-        ));
+        ResourcePackProfile profile = new ArtificeResourcePackContainer(this.optional, this.visible, Objects.requireNonNull(ResourcePackProfile.of(
+                id.toString(),
+                true, () -> this, factory,
+                this.optional ? ResourcePackProfile.InsertionPosition.TOP : ResourcePackProfile.InsertionPosition.BOTTOM,
+                ARTIFICE_RESOURCE_PACK_SOURCE
+        )));
 
         return new ClientOnly<>(profile);
     }
@@ -354,7 +356,7 @@ public class ArtificeResourcePackImpl implements ArtificeResourcePack {
         assert id != null;
         return ResourcePackProfile.of(
                         id.toString(),
-                        false, () -> this, factory,
+                 true, () -> this, factory,
                         ResourcePackProfile.InsertionPosition.BOTTOM,
                         ARTIFICE_RESOURCE_PACK_SOURCE
         );

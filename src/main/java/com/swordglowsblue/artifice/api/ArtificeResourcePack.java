@@ -9,6 +9,8 @@ import com.swordglowsblue.artifice.api.builder.data.dimension.DimensionTypeBuild
 import com.swordglowsblue.artifice.api.builder.data.recipe.*;
 import com.swordglowsblue.artifice.api.builder.data.worldgen.*;
 import com.swordglowsblue.artifice.api.builder.data.worldgen.biome.BiomeBuilder;
+import com.swordglowsblue.artifice.api.builder.data.worldgen.configured.ConfiguredCarverBuilder;
+import com.swordglowsblue.artifice.api.builder.data.worldgen.configured.ConfiguredSurfaceBuilder;
 import com.swordglowsblue.artifice.api.builder.data.worldgen.features.trees.TreeFeatureBuilder;
 import com.swordglowsblue.artifice.api.resource.ArtificeResource;
 import com.swordglowsblue.artifice.api.util.Processor;
@@ -261,12 +263,21 @@ public interface ArtificeResourcePack extends ResourcePack, ServerResourcePackPr
         void addBiome(Identifier id, Processor<BiomeBuilder> f);
 
         /**
+         * Add a ConfiguredSurfaceBuilder with the given ID.
+         *
+         * @param id The ID of the configured surface builder, which will be converted into the correct path.
+         * @param f A callback which will be passed an {@link ConfiguredSurfaceBuilder}
+         *          to create the configured surface builder .
+         */
+        void addConfiguredSurfaceBuilder(Identifier id, Processor<ConfiguredSurfaceBuilder> f);
+
+        /**
          * Add a Carver with the given ID.
          *
          * @param id The ID of the carver, which will be converted into the correct path.
-         * @param f A callback which will be passed an {@link CarverBuilder} to create the carver .
+         * @param f A callback which will be passed an {@link ConfiguredCarverBuilder} to create the carver .
          */
-        void addConfiguredCarver(Identifier id, Processor<CarverBuilder> f);
+        void addConfiguredCarver(Identifier id, Processor<ConfiguredCarverBuilder> f);
 
         /**
          * Add a Configured Feature with the given ID.
@@ -291,14 +302,6 @@ public interface ArtificeResourcePack extends ResourcePack, ServerResourcePackPr
          * @param f A callback which will be passed an {@link StructureFeatureBuilder} to create the configured structure feature config.
          */
         void addConfiguredStructureFeature(Identifier id, Processor<StructureFeatureBuilder> f);
-
-        /**
-         * Add a Surface Builder with the given ID.
-         *
-         * @param id The ID of the surface builder, which will be converted into the correct path.
-         * @param f A callback which will be passed an {@link SurfaceBuilderBuilder} to create the surface builder config.
-         */
-        void addConfiguredSurfaceBuilder(Identifier id, Processor<SurfaceBuilderBuilder> f);
 
         /**
          * Add a Processor List with the given ID.
