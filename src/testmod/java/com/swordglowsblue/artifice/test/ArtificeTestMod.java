@@ -138,7 +138,7 @@ public class ArtificeTestMod implements ModInitializer, ClientModInitializer {
             pack.addBiome(id("blue_orchid_fields"), biomeBuilder -> {
                 biomeBuilder.surfaceBuilder("minecraft:grass");
                 biomeBuilder.precipitation(Biome.Precipitation.RAIN);
-                biomeBuilder.category(Biome.Category.PLAINS);
+                biomeBuilder.category(Biome.Category.FOREST);
                 biomeBuilder.depth(0.125F);
                 biomeBuilder.scale(0.05F);
                 biomeBuilder.temperature(0.8F);
@@ -150,7 +150,7 @@ public class ArtificeTestMod implements ModInitializer, ClientModInitializer {
                     biomeEffectsBuilder.fogColor(12638463);
                 });
                 biomeBuilder.addAirCarvers(id("test_carver").toString());
-                biomeBuilder.addFeaturesByStep(GenerationStep.Feature.VEGETAL_DECORATION, id("swamp_tree").toString());
+                biomeBuilder.addFeaturesByStep(GenerationStep.Feature.VEGETAL_DECORATION, id("basalt_tree").toString());
                 biomeBuilder.addFeaturesByStep(GenerationStep.Feature.LAKES, "minecraft:lake_water", "minecraft:lake_lava");
                 biomeBuilder.addFeaturesByStep(GenerationStep.Feature.UNDERGROUND_STRUCTURES, "minecraft:monster_room");
                 biomeBuilder.addFeaturesByStep(GenerationStep.Feature.UNDERGROUND_ORES,

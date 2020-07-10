@@ -22,7 +22,7 @@ public class TreeFeatureBuilder extends TypedJsonBuilder<JsonResource<JsonObject
         return this;
     }
 
-    public TreeFeatureBuilder maxWaterDepth(float max_water_depth) {
+    public TreeFeatureBuilder maxWaterDepth(int max_water_depth) {
         this.root.get("config").getAsJsonObject().addProperty("max_water_depth", max_water_depth);
         return this;
     }
