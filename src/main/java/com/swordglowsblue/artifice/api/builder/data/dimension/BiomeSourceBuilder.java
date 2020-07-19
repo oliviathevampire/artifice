@@ -3,6 +3,7 @@ package com.swordglowsblue.artifice.api.builder.data.dimension;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.swordglowsblue.artifice.api.builder.TypedJsonBuilder;
+import com.swordglowsblue.artifice.api.builder.data.AdvancementBuilder;
 import com.swordglowsblue.artifice.api.util.Processor;
 
 public class BiomeSourceBuilder extends TypedJsonBuilder<JsonObject> {

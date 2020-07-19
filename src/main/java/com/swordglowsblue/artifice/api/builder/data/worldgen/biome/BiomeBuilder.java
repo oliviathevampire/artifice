@@ -30,17 +30,6 @@ public class BiomeBuilder extends TypedJsonBuilder<JsonResource<JsonObject>> {
         return this;
     }
 
-    public BiomeBuilder addSpawnCosts(String entityID, Processor<SpawnDensityBuilder> spawnDensityBuilderProcessor) {
-        with(entityID, JsonObject::new, spawnDensityBuilder -> spawnDensityBuilderProcessor.process(new SpawnDensityBuilder()).buildTo(spawnDensityBuilder));
-        return this;
-    }
-
-    public BiomeBuilder addSpawnEntry(SpawnGroup spawnGroup, Processor<BiomeSpawnEntryBuilder> biomeSpawnEntryBuilderProcessor) {
-        this.root.getAsJsonObject("spawners").get(spawnGroup.getName()).getAsJsonArray()
-                .add(biomeSpawnEntryBuilderProcessor.process(new BiomeSpawnEntryBuilder()).buildTo(new JsonObject()));
-        return this;
-    }
-
     public BiomeBuilder scale(float scale) {
         this.root.addProperty("scale", scale);
         return this;
@@ -91,6 +80,17 @@ public class BiomeBuilder extends TypedJsonBuilder<JsonResource<JsonObject>> {
         return this;
     }
 
+    public BiomeBuilder addSpawnCosts(String entityID, Processor<SpawnDensityBuilder> spawnDensityBuilderProcessor) {
+        with(entityID, JsonObject::new, spawnDensityBuilder -> spawnDensityBuilderProcessor.process(new SpawnDensityBuilder()).buildTo(spawnDensityBuilder));
+        return this;
+    }
+
+    public BiomeBuilder addSpawnEntry(SpawnGroup spawnGroup, Processor<BiomeSpawnEntryBuilder> biomeSpawnEntryBuilderProcessor) {
+        this.root.getAsJsonObject("spawners").get(spawnGroup.getName()).getAsJsonArray()
+                .add(biomeSpawnEntryBuilderProcessor.process(new BiomeSpawnEntryBuilder()).buildTo(new JsonObject()));
+        return this;
+    }
+
     private BiomeBuilder addCarver(GenerationStep.Carver carver, String[] configuredCaverIDs) {
         for (String configuredCaverID : configuredCaverIDs)
             this.root.getAsJsonObject("carvers").getAsJsonArray(carver.getName()).add(configuredCaverID);
@@ -109,7 +109,7 @@ public class BiomeBuilder extends TypedJsonBuilder<JsonResource<JsonObject>> {
         return this;
     }
 
-    public BiomeBuilder addFeaturesByStep(GenerationStep.Feature step, String... featureIDs) {
+    public BiomeBuilder addFeaturesbyStep(GenerationStep.Feature step, String... featureIDs) {
         for (String featureID : featureIDs)
             this.root.getAsJsonArray("features").get(step.ordinal()).getAsJsonArray().add(featureID);
         return this;

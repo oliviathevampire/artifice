@@ -7,7 +7,6 @@ import net.minecraft.resource.ResourcePackProfile;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.resource.ResourcePackProfile;
 
 /**
  * A wrapper around {@link ResourcePackProfile} exposing optionality/visibility.

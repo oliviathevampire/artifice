@@ -5,37 +5,38 @@ import com.swordglowsblue.artifice.api.builder.TypedJsonBuilder;
 import com.swordglowsblue.artifice.api.util.Processor;
 
 public class BiomeEffectsBuilder extends TypedJsonBuilder<JsonObject> {
+
     public BiomeEffectsBuilder() {
         super(new JsonObject(), j->j);
     }
 
 
     /**
-     * @param fogColor RGB value.
+     * @param fog_color RGB value.
      * @return BiomeBuilder
      */
-    public BiomeEffectsBuilder fogColor(int fogColor) {
-        this.root.addProperty("fog_color", fogColor);
+    public BiomeEffectsBuilder fogColor(int fog_color) {
+        this.root.addProperty("fog_color", fog_color);
         return this;
     }
 
 
     /**
-     * @param waterColor RGB value.
+     * @param water_color RGB value.
      * @return BiomeBuilder
      */
-    public BiomeEffectsBuilder waterColor(int waterColor) {
-        this.root.addProperty("water_color", waterColor);
+    public BiomeEffectsBuilder waterColor(int water_color) {
+        this.root.addProperty("water_color", water_color);
         return this;
     }
 
 
     /**
-     * @param waterFogColor RGB value.
+     * @param water_fog_color RGB value.
      * @return BiomeBuilder
      */
-    public BiomeEffectsBuilder waterFogColor(int waterFogColor) {
-        this.root.addProperty("water_fog_color", waterFogColor);
+    public BiomeEffectsBuilder waterFogColor(int water_fog_color) {
+        this.root.addProperty("water_fog_color", water_fog_color);
         return this;
     }
 

@@ -5,6 +5,8 @@ import com.google.gson.JsonObject;
 import com.swordglowsblue.artifice.api.builder.TypedJsonBuilder;
 import com.swordglowsblue.artifice.api.util.Processor;
 
+import java.util.function.Function;
+
 public class ChunkGeneratorTypeBuilder extends TypedJsonBuilder<JsonObject> {
 
     protected ChunkGeneratorTypeBuilder() {
@@ -33,6 +35,7 @@ public class ChunkGeneratorTypeBuilder extends TypedJsonBuilder<JsonObject> {
         with("biome_source", JsonObject::new, biomeSource -> biomeSourceBuilder.process(biomeSourceBuilderInstance).buildTo(biomeSource));
         return this;
     }
+
 
     public static class NoiseChunkGeneratorTypeBuilder extends ChunkGeneratorTypeBuilder {
         public NoiseChunkGeneratorTypeBuilder() {
@@ -148,7 +151,6 @@ public class ChunkGeneratorTypeBuilder extends TypedJsonBuilder<JsonObject> {
             return this;
         }
 
-
         public FlatChunkGeneratorTypeBuilder lakes(boolean lakes) {
             this.root.getAsJsonObject("settings").addProperty("lakes", lakes);
             return this;
@@ -158,7 +160,6 @@ public class ChunkGeneratorTypeBuilder extends TypedJsonBuilder<JsonObject> {
             this.root.getAsJsonObject("settings").addProperty("features", features);
             return this;
         }
-
 
         /**
          * Add a block layer.

@@ -1,4 +1,4 @@
-//package com.swordglowsblue.artifice.mixin;
+package com.swordglowsblue.artifice.mixin;//package com.swordglowsblue.artifice.mixin;
 //
 //import com.swordglowsblue.artifice.impl.ArtificeDataResourcePackProvider;
 //import org.apache.commons.lang3.ArrayUtils;

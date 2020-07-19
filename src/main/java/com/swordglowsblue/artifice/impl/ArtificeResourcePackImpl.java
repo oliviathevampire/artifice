@@ -1,5 +1,20 @@
 package com.swordglowsblue.artifice.impl;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
@@ -7,18 +22,25 @@ import com.google.gson.JsonObject;
 import com.swordglowsblue.artifice.api.ArtificeResourcePack;
 import com.swordglowsblue.artifice.api.builder.JsonObjectBuilder;
 import com.swordglowsblue.artifice.api.builder.TypedJsonBuilder;
-import com.swordglowsblue.artifice.api.builder.assets.*;
+import com.swordglowsblue.artifice.api.builder.assets.AnimationBuilder;
+import com.swordglowsblue.artifice.api.builder.assets.BlockStateBuilder;
+import com.swordglowsblue.artifice.api.builder.assets.ModelBuilder;
+import com.swordglowsblue.artifice.api.builder.assets.ParticleBuilder;
+import com.swordglowsblue.artifice.api.builder.assets.TranslationBuilder;
 import com.swordglowsblue.artifice.api.builder.data.AdvancementBuilder;
-import com.swordglowsblue.artifice.api.builder.data.LootTableBuilder;
-import com.swordglowsblue.artifice.api.builder.data.TagBuilder;
-import com.swordglowsblue.artifice.api.builder.data.dimension.DimensionBuilder;
-import com.swordglowsblue.artifice.api.builder.data.dimension.DimensionTypeBuilder;
-import com.swordglowsblue.artifice.api.builder.data.recipe.*;
-import com.swordglowsblue.artifice.api.builder.data.worldgen.*;
-import com.swordglowsblue.artifice.api.builder.data.worldgen.biome.BiomeBuilder;
 import com.swordglowsblue.artifice.api.builder.data.worldgen.configured.ConfiguredCarverBuilder;
 import com.swordglowsblue.artifice.api.builder.data.worldgen.configured.ConfiguredSurfaceBuilder;
-import com.swordglowsblue.artifice.api.builder.data.worldgen.features.trees.TreeFeatureBuilder;
+import com.swordglowsblue.artifice.api.builder.data.worldgen.biome.BiomeBuilder;
+import com.swordglowsblue.artifice.api.builder.data.dimension.DimensionBuilder;
+import com.swordglowsblue.artifice.api.builder.data.dimension.DimensionTypeBuilder;
+import com.swordglowsblue.artifice.api.builder.data.LootTableBuilder;
+import com.swordglowsblue.artifice.api.builder.data.TagBuilder;
+import com.swordglowsblue.artifice.api.builder.data.recipe.CookingRecipeBuilder;
+import com.swordglowsblue.artifice.api.builder.data.recipe.GenericRecipeBuilder;
+import com.swordglowsblue.artifice.api.builder.data.recipe.ShapedRecipeBuilder;
+import com.swordglowsblue.artifice.api.builder.data.recipe.ShapelessRecipeBuilder;
+import com.swordglowsblue.artifice.api.builder.data.recipe.StonecuttingRecipeBuilder;
+import com.swordglowsblue.artifice.api.builder.data.worldgen.configured.feature.ConfiguredFeatureBuilder;
 import com.swordglowsblue.artifice.api.resource.ArtificeResource;
 import com.swordglowsblue.artifice.api.resource.JsonResource;
 import com.swordglowsblue.artifice.api.util.IdUtils;
@@ -26,10 +48,9 @@ import com.swordglowsblue.artifice.api.util.Processor;
 import com.swordglowsblue.artifice.api.virtualpack.ArtificeResourcePackContainer;
 import com.swordglowsblue.artifice.common.ArtificeRegistry;
 import com.swordglowsblue.artifice.common.ClientOnly;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.fabricmc.api.EnvironmentInterface;
-import net.fabricmc.loader.api.FabricLoader;
+import org.apache.commons.io.input.NullInputStream;
+import org.apache.logging.log4j.LogManager;
+
 import net.minecraft.SharedConstants;
 import net.minecraft.client.resource.language.LanguageDefinition;
 import net.minecraft.resource.ResourcePackProfile;
@@ -37,14 +58,11 @@ import net.minecraft.resource.ResourcePackSource;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.resource.metadata.ResourceMetadataReader;
 import net.minecraft.util.Identifier;
-import org.apache.commons.io.input.NullInputStream;
-import org.apache.logging.log4j.LogManager;
 
-import java.io.*;
-import java.util.*;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.fabricmc.api.EnvironmentInterface;
+import net.fabricmc.loader.api.FabricLoader;
 
 public class ArtificeResourcePackImpl implements ArtificeResourcePack {
     private final ResourceType type;
@@ -166,44 +184,28 @@ public class ArtificeResourcePackImpl implements ArtificeResourcePack {
             this.add("advancements/", id, ".json", f, AdvancementBuilder::new);
         }
 
-        public void addBiome(Identifier id, Processor<BiomeBuilder> f) {
-            this.add("worldgen/biome/" + id.getNamespace() + "/", new Identifier(id.getPath()), ".json", f, BiomeBuilder::new);
-        }
-
-        public void addConfiguredSurfaceBuilder(Identifier id, Processor<ConfiguredSurfaceBuilder> f) {
-            this.add("worldgen/configured_surface_builder/" + id.getNamespace() + "/", new Identifier(id.getPath()), ".json", f, ConfiguredSurfaceBuilder::new);
-        }
-
-        public void addConfiguredCarver(Identifier id, Processor<ConfiguredCarverBuilder> f) {
-            this.add("worldgen/configured_carver/" + id.getNamespace() + "/", new Identifier(id.getPath()), ".json", f, ConfiguredCarverBuilder::new);
-        }
-
-        public void addConfiguredFeature(Identifier id, Processor<FeatureBuilder> f) {
-            this.add("worldgen/configured_feature/" + id.getNamespace() + "/", new Identifier(id.getPath()), ".json", f, FeatureBuilder::new);
-        }
-
-        public void addTreeType(Identifier id, Processor<TreeFeatureBuilder> f) {
-            this.add("worldgen/configured_feature/" + id.getNamespace() + "/", new Identifier(id.getPath()), ".json", f, TreeFeatureBuilder::new);
-        }
-
-        public void addConfiguredStructureFeature(Identifier id, Processor<StructureFeatureBuilder> f) {
-            this.add("worldgen/configured_structure_feature/" + id.getNamespace() + "/", new Identifier(id.getPath()), ".json", f, StructureFeatureBuilder::new);
-        }
-
-        public void addProcessorList(Identifier id, Processor<ProcessorListBuilder> f) {
-            this.add("worldgen/processor_list/" + id.getNamespace() + "/", new Identifier(id.getPath()), ".json", f, ProcessorListBuilder::new);
-        }
-
-        public void addTemplatePool(Identifier id, Processor<TemplatePoolBuilder> f) {
-            this.add("worldgen/template_pool/" + id.getNamespace() + "/", new Identifier(id.getPath()), ".json", f, TemplatePoolBuilder::new);
-        }
-
         public void addDimensionType(Identifier id, Processor<DimensionTypeBuilder> f) {
             this.add("dimension_type/" + id.getNamespace() + "/", new Identifier(id.getPath()), ".json", f, DimensionTypeBuilder::new);
         }
 
         public void addDimension(Identifier id, Processor<DimensionBuilder> f) {
             this.add("dimension/" + id.getNamespace() + "/", new Identifier(id.getPath()), ".json", f, DimensionBuilder::new);
+        }
+
+        public void addBiome(Identifier id, Processor<BiomeBuilder> f) {
+            this.add("worldgen/biome/" + id.getNamespace() + "/", new Identifier(id.getPath()), ".json", f, BiomeBuilder::new);
+        }
+
+        public void addConfiguredCarver(Identifier id, Processor<ConfiguredCarverBuilder> f) {
+            this.add("worldgen/configured_carver/" + id.getNamespace() + "/", new Identifier(id.getPath()), ".json", f, ConfiguredCarverBuilder::new);
+        }
+
+        public void addConfiguredFeature(Identifier id, Processor<ConfiguredFeatureBuilder> f) {
+            this.add("worldgen/configured_feature/" + id.getNamespace() + "/", new Identifier(id.getPath()), ".json", f, ConfiguredFeatureBuilder::new);
+        }
+
+        public void addConfiguredSurfaceBuilder(Identifier id, Processor<ConfiguredSurfaceBuilder> f) {
+            this.add("worldgen/configured_surface_builder/" + id.getNamespace() + "/", new Identifier(id.getPath()), ".json", f, ConfiguredSurfaceBuilder::new);
         }
 
         public void addLootTable(Identifier id, Processor<LootTableBuilder> f) {
@@ -335,12 +337,12 @@ public class ArtificeResourcePackImpl implements ArtificeResourcePack {
     public <T extends ResourcePackProfile> ClientOnly<ResourcePackProfile> toClientResourcePackProfile(ResourcePackProfile.Factory factory) {
         Identifier id = ArtificeRegistry.ASSETS.getId(this);
         assert id != null;
-        ResourcePackProfile profile = new ArtificeResourcePackContainer(this.optional, this.visible, Objects.requireNonNull(ResourcePackProfile.of(
-                id.toString(),
-                true, () -> this, factory,
-                this.optional ? ResourcePackProfile.InsertionPosition.TOP : ResourcePackProfile.InsertionPosition.BOTTOM,
-                ARTIFICE_RESOURCE_PACK_SOURCE
-        )));
+        ResourcePackProfile profile = new ArtificeResourcePackContainer(this.optional, this.visible, ResourcePackProfile.of(
+                        id.toString(),
+                        false, () -> this, factory,
+                        this.optional ? ResourcePackProfile.InsertionPosition.TOP : ResourcePackProfile.InsertionPosition.BOTTOM,
+                        ARTIFICE_RESOURCE_PACK_SOURCE
+        ));
 
         return new ClientOnly<>(profile);
     }
@@ -356,7 +358,7 @@ public class ArtificeResourcePackImpl implements ArtificeResourcePack {
         assert id != null;
         return ResourcePackProfile.of(
                         id.toString(),
-                 true, () -> this, factory,
+                        true, () -> this, factory,
                         ResourcePackProfile.InsertionPosition.BOTTOM,
                         ARTIFICE_RESOURCE_PACK_SOURCE
         );

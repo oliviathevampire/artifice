@@ -1,17 +1,27 @@
 package com.swordglowsblue.artifice.api;
 
-import com.swordglowsblue.artifice.api.builder.assets.*;
+import java.io.IOException;
+import java.util.function.Consumer;
+
+import com.swordglowsblue.artifice.api.builder.assets.AnimationBuilder;
+import com.swordglowsblue.artifice.api.builder.assets.BlockStateBuilder;
+import com.swordglowsblue.artifice.api.builder.assets.ModelBuilder;
+import com.swordglowsblue.artifice.api.builder.assets.ParticleBuilder;
+import com.swordglowsblue.artifice.api.builder.assets.TranslationBuilder;
 import com.swordglowsblue.artifice.api.builder.data.AdvancementBuilder;
-import com.swordglowsblue.artifice.api.builder.data.LootTableBuilder;
-import com.swordglowsblue.artifice.api.builder.data.TagBuilder;
-import com.swordglowsblue.artifice.api.builder.data.dimension.DimensionBuilder;
-import com.swordglowsblue.artifice.api.builder.data.dimension.DimensionTypeBuilder;
-import com.swordglowsblue.artifice.api.builder.data.recipe.*;
-import com.swordglowsblue.artifice.api.builder.data.worldgen.*;
-import com.swordglowsblue.artifice.api.builder.data.worldgen.biome.BiomeBuilder;
 import com.swordglowsblue.artifice.api.builder.data.worldgen.configured.ConfiguredCarverBuilder;
 import com.swordglowsblue.artifice.api.builder.data.worldgen.configured.ConfiguredSurfaceBuilder;
-import com.swordglowsblue.artifice.api.builder.data.worldgen.features.trees.TreeFeatureBuilder;
+import com.swordglowsblue.artifice.api.builder.data.worldgen.biome.BiomeBuilder;
+import com.swordglowsblue.artifice.api.builder.data.dimension.DimensionBuilder;
+import com.swordglowsblue.artifice.api.builder.data.dimension.DimensionTypeBuilder;
+import com.swordglowsblue.artifice.api.builder.data.LootTableBuilder;
+import com.swordglowsblue.artifice.api.builder.data.TagBuilder;
+import com.swordglowsblue.artifice.api.builder.data.recipe.CookingRecipeBuilder;
+import com.swordglowsblue.artifice.api.builder.data.recipe.GenericRecipeBuilder;
+import com.swordglowsblue.artifice.api.builder.data.recipe.ShapedRecipeBuilder;
+import com.swordglowsblue.artifice.api.builder.data.recipe.ShapelessRecipeBuilder;
+import com.swordglowsblue.artifice.api.builder.data.recipe.StonecuttingRecipeBuilder;
+import com.swordglowsblue.artifice.api.builder.data.worldgen.configured.feature.ConfiguredFeatureBuilder;
 import com.swordglowsblue.artifice.api.resource.ArtificeResource;
 import com.swordglowsblue.artifice.api.util.Processor;
 import com.swordglowsblue.artifice.api.virtualpack.ArtificeResourcePackContainer;
@@ -19,8 +29,7 @@ import com.swordglowsblue.artifice.common.ClientOnly;
 import com.swordglowsblue.artifice.common.ClientResourcePackProfileLike;
 import com.swordglowsblue.artifice.common.ServerResourcePackProfileLike;
 import com.swordglowsblue.artifice.impl.ArtificeResourcePackImpl;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
+
 import net.minecraft.client.resource.language.LanguageDefinition;
 import net.minecraft.resource.ResourcePack;
 import net.minecraft.resource.ResourcePackProfile;
@@ -28,8 +37,8 @@ import net.minecraft.resource.ResourceType;
 import net.minecraft.resource.VanillaDataPackProvider;
 import net.minecraft.util.Identifier;
 
-import java.io.IOException;
-import java.util.function.Consumer;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 
 /**
  * A resource pack containing Artifice-based resources. May be used for resource generation with
@@ -89,7 +98,7 @@ public interface ArtificeResourcePack extends ResourcePack, ServerResourcePackPr
     /**
      * @param factory The factory function passed to {@link VanillaDataPackProvider#register(Consumer, ResourcePackProfile.Factory)}.
      * @return The created container.
-     * @deprecated use {@link ArtificeResourcePack#toClientResourcePackProfile(ResourcePackProfile.class_5351)}
+     * @deprecated use {@link ArtificeResourcePack#toClientResourcePackProfile(ResourcePackProfile.Factory)}
      * Create a client-side {@link ResourcePackProfile} for this pack.
      */
     @Environment(EnvType.CLIENT)
@@ -99,7 +108,7 @@ public interface ArtificeResourcePack extends ResourcePack, ServerResourcePackPr
     /**
      * @param factory The factory function passed to {@link VanillaDataPackProvider#register}.
      * @return The created container.
-     * @deprecated use {@link ArtificeResourcePack#toServerResourcePackProfile(ResourcePackProfile.class_5351)}
+     * @deprecated use {@link ArtificeResourcePack#toServerResourcePackProfile(ResourcePackProfile.Factory)}
      * Create a server-side {@link ResourcePackProfile} for this pack.
      */
     @Deprecated
@@ -255,71 +264,6 @@ public interface ArtificeResourcePack extends ResourcePack, ServerResourcePackPr
         void addAdvancement(Identifier id, Processor<AdvancementBuilder> f);
 
         /**
-         * Add a Biome with the given ID.
-         *
-         * @param id The ID of the biome, which will be converted into the correct path.
-         * @param f A callback which will be passed an {@link BiomeBuilder} to create the dimension.
-         */
-        void addBiome(Identifier id, Processor<BiomeBuilder> f);
-
-        /**
-         * Add a ConfiguredSurfaceBuilder with the given ID.
-         *
-         * @param id The ID of the configured surface builder, which will be converted into the correct path.
-         * @param f A callback which will be passed an {@link ConfiguredSurfaceBuilder}
-         *          to create the configured surface builder .
-         */
-        void addConfiguredSurfaceBuilder(Identifier id, Processor<ConfiguredSurfaceBuilder> f);
-
-        /**
-         * Add a Carver with the given ID.
-         *
-         * @param id The ID of the carver, which will be converted into the correct path.
-         * @param f A callback which will be passed an {@link ConfiguredCarverBuilder} to create the carver .
-         */
-        void addConfiguredCarver(Identifier id, Processor<ConfiguredCarverBuilder> f);
-
-        /**
-         * Add a Configured Feature with the given ID.
-         *
-         * @param id The ID of the configured feature, which will be converted into the correct path.
-         * @param f A callback which will be passed an {@link FeatureBuilder} to create the configured feature config.
-         */
-        void addConfiguredFeature(Identifier id, Processor<FeatureBuilder> f);
-
-        /**
-         * Add a Configured Feature with the given ID.
-         *
-         * @param id The ID of the configured feature, which will be converted into the correct path.
-         * @param f A callback which will be passed an {@link TreeFeatureBuilder} to create the configured feature config.
-         */
-        void addTreeType(Identifier id, Processor<TreeFeatureBuilder> f);
-
-        /**
-         * Add a Configured Structure Feature with the given ID.
-         *
-         * @param id The ID of the configured structure feature, which will be converted into the correct path.
-         * @param f A callback which will be passed an {@link StructureFeatureBuilder} to create the configured structure feature config.
-         */
-        void addConfiguredStructureFeature(Identifier id, Processor<StructureFeatureBuilder> f);
-
-        /**
-         * Add a Processor List with the given ID.
-         *
-         * @param id The ID of the processor list, which will be converted into the correct path.
-         * @param f A callback which will be passed an {@link ProcessorListBuilder} to create the processor list.
-         */
-        void addProcessorList(Identifier id, Processor<ProcessorListBuilder> f);
-
-        /**
-         * Add a Template Pool with the given ID.
-         *
-         * @param id The ID of the template pool, which will be converted into the correct path.
-         * @param f A callback which will be passed an {@link TemplatePoolBuilder} to create the template pool.
-         */
-        void addTemplatePool(Identifier id, Processor<TemplatePoolBuilder> f);
-
-        /**
          * Add a Dimension Type with the given ID.
          *
          * @param id The ID of the dimension type, which will be converted into the correct path.
@@ -331,9 +275,42 @@ public interface ArtificeResourcePack extends ResourcePack, ServerResourcePackPr
          * Add a Dimension with the given ID.
          *
          * @param id The ID of the dimension, which will be converted into the correct path.
-         * @param f A callback which will be passed an {@link com.swordglowsblue.artifice.api.builder.data.dimension.DimensionBuilder} to create the dimension .
+         * @param f A callback which will be passed an {@link DimensionBuilder} to create the dimension .
          */
         void addDimension(Identifier id, Processor<DimensionBuilder> f);
+
+        /**
+         * Add a Biome with the given ID.
+         *
+         * @param id The ID of the biome, which will be converted into the correct path.
+         * @param f A callback which will be passed an {@link BiomeBuilder} to create the biome .
+         */
+        void addBiome(Identifier id, Processor<BiomeBuilder> f);
+
+        /**
+         * Add a Carver with the given ID.
+         *
+         * @param id The ID of the carver, which will be converted into the correct path.
+         * @param f A callback which will be passed an {@link ConfiguredCarverBuilder} to create the carver .
+         */
+        void addConfiguredCarver(Identifier id, Processor<ConfiguredCarverBuilder> f);
+
+        /**
+         * Add a Feature with the given ID.
+         *
+         * @param id The ID of the feature, which will be converted into the correct path.
+         * @param f A callback which will be passed an {@link ConfiguredFeatureBuilder} to create the feature .
+         */
+        void addConfiguredFeature(Identifier id, Processor<ConfiguredFeatureBuilder> f);
+
+        /**
+         * Add a ConfiguredSurfaceBuilder with the given ID.
+         *
+         * @param id The ID of the configured surface builder, which will be converted into the correct path.
+         * @param f A callback which will be passed an {@link ConfiguredSurfaceBuilder}
+         *          to create the configured surface builder .
+         */
+        void addConfiguredSurfaceBuilder(Identifier id, Processor<ConfiguredSurfaceBuilder> f);
 
         /**
          * Add a loot table with the given ID.

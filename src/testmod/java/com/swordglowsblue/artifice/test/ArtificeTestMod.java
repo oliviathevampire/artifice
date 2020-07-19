@@ -6,6 +6,14 @@ import com.swordglowsblue.artifice.api.Artifice;
 import com.swordglowsblue.artifice.api.ArtificeResourcePack;
 import com.swordglowsblue.artifice.api.builder.data.dimension.BiomeSourceBuilder;
 import com.swordglowsblue.artifice.api.builder.data.dimension.ChunkGeneratorTypeBuilder;
+import com.swordglowsblue.artifice.api.builder.data.worldgen.BlockStateProviderBuilder;
+import com.swordglowsblue.artifice.api.builder.data.worldgen.configured.decorator.config.CountExtraDecoratorConfigBuilder;
+import com.swordglowsblue.artifice.api.builder.data.worldgen.configured.decorator.config.DecoratedDecoratorConfigBuilder;
+import com.swordglowsblue.artifice.api.builder.data.worldgen.configured.feature.config.DecoratedFeatureConfigBuilder;
+import com.swordglowsblue.artifice.api.builder.data.worldgen.configured.feature.config.TreeFeatureConfigBuilder;
+import com.swordglowsblue.artifice.api.builder.data.worldgen.gen.FeatureSizeBuilder;
+import com.swordglowsblue.artifice.api.builder.data.worldgen.gen.FoliagePlacerBuilder;
+import com.swordglowsblue.artifice.api.builder.data.worldgen.gen.TrunkPlacerBuilder;
 import com.swordglowsblue.artifice.api.resource.StringResource;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
@@ -21,10 +29,7 @@ import net.minecraft.tag.BlockTags;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
-import net.minecraft.world.BlockView;
-import net.minecraft.world.ChunkRegion;
-import net.minecraft.world.Heightmap;
-import net.minecraft.world.WorldAccess;
+import net.minecraft.world.*;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.source.BiomeSource;
 import net.minecraft.world.chunk.Chunk;
@@ -74,124 +79,6 @@ public class ArtificeTestMod implements ModInitializer, ClientModInitializer {
                             "  }\n" +
                             "}"));
 
-
-            /*pack.addTreeType(id("basalt_tree"), treeFeatureBuilder -> {
-                treeFeatureBuilder.name("minecraft:tree");
-                treeFeatureBuilder.heightmap("OCEAN_FLOOR");
-                treeFeatureBuilder.ignoreVines(true);
-                treeFeatureBuilder.maxWaterDepth(0);
-                treeFeatureBuilder.minimumSize(minimumSizeBuilder -> {
-                    minimumSizeBuilder.limit(1);
-                    minimumSizeBuilder.lowerSize(0);
-                    minimumSizeBuilder.upperSize(2);
-                    minimumSizeBuilder.type("minecraft:two_layers_feature_size");
-                });
-                treeFeatureBuilder.trunkProvider(trunkProviderBuilder -> {
-                    trunkProviderBuilder.state(stateBuilder -> {
-                        stateBuilder.axis("y");
-                        stateBuilder.name("minecraft:basalt");
-                    });
-                    trunkProviderBuilder.type("minecraft:simple_state_provider");
-                });
-                treeFeatureBuilder.leavesProvider(leavesProviderBuilder -> {
-                    leavesProviderBuilder.state(stateBuilder -> stateBuilder.name("minecraft:blackstone"));
-                    leavesProviderBuilder.type("minecraft:simple_state_provider");
-                });
-            });*/
-
-            pack.addTreeType(id("basalt_tree"), treeFeatureBuilder -> {
-                treeFeatureBuilder.name("minecraft:tree");
-                treeFeatureBuilder.heightmap("OCEAN_FLOOR");
-                treeFeatureBuilder.ignoreVines(true);
-                treeFeatureBuilder.maxWaterDepth(0);
-                treeFeatureBuilder.minimumSize(minimumSizeBuilder -> {
-                    minimumSizeBuilder.limit(1);
-                    minimumSizeBuilder.lowerSize(0);
-                    minimumSizeBuilder.upperSize(2);
-                    minimumSizeBuilder.type("minecraft:two_layers_feature_size");
-                });
-                treeFeatureBuilder.trunkProvider(trunkProviderBuilder -> {
-                    trunkProviderBuilder.state(stateBuilder -> {
-                        stateBuilder.axis("y");
-                        stateBuilder.name("minecraft:basalt");
-                    });
-                    trunkProviderBuilder.type("minecraft:simple_state_provider");
-                });
-                treeFeatureBuilder.leavesProvider(leavesProviderBuilder -> {
-                    leavesProviderBuilder.state(stateBuilder -> stateBuilder.name("minecraft:blackstone"));
-                    leavesProviderBuilder.type("minecraft:simple_state_provider");
-                });
-                treeFeatureBuilder.foliagePlacer(foliagePlacerBuilder -> {
-                   foliagePlacerBuilder.radius(2);
-                   foliagePlacerBuilder.offset(0);
-                   foliagePlacerBuilder.height(3);
-                   foliagePlacerBuilder.type("minecraft:blob_foliage_placer");
-                });
-                treeFeatureBuilder.trunkPlacer(trunkPlacerBuilder -> {
-                    trunkPlacerBuilder.baseHeight(5);
-                    trunkPlacerBuilder.heightRandA(2);
-                    trunkPlacerBuilder.heightRandB(0);
-                    trunkPlacerBuilder.type("minecraft:straight_trunk_placer");
-                });
-            });
-
-            pack.addBiome(id("blue_orchid_fields"), biomeBuilder -> {
-                biomeBuilder.surfaceBuilder(id("test_surface_builder").toString());
-                biomeBuilder.precipitation(Biome.Precipitation.RAIN);
-                biomeBuilder.category(Biome.Category.FOREST);
-                biomeBuilder.depth(0.1F);
-                biomeBuilder.scale(0.2F);
-                biomeBuilder.temperature(0.8F);
-                biomeBuilder.downfall(0.4F);
-                biomeBuilder.skyColor(4159204);
-                biomeBuilder.effects(biomeEffectsBuilder -> {
-                    biomeEffectsBuilder.waterColor(4159204);
-                    biomeEffectsBuilder.waterFogColor(329011);
-                    biomeEffectsBuilder.fogColor(12638463);
-                });
-                biomeBuilder.addAirCarvers(id("test_carver").toString());
-                biomeBuilder.addFeaturesByStep(GenerationStep.Feature.VEGETAL_DECORATION, id("basalt_tree").toString(), "minecraft:spring_lava_double");
-                biomeBuilder.addFeaturesByStep(GenerationStep.Feature.SURFACE_STRUCTURES,
-                        "minecraft:delta",
-                        "minecraft:small_basalt_columns",
-                        "minecraft:large_basalt_columns"
-                );
-                biomeBuilder.addFeaturesByStep(GenerationStep.Feature.UNDERGROUND_DECORATION,
-                        "minecraft:basalt_blobs",
-                        "minecraft:blackstone_blobs",
-                        "minecraft:spring_delta"
-                );
-                biomeBuilder.addFeaturesByStep(GenerationStep.Feature.LAKES, "minecraft:lake_water", "minecraft:lake_lava");
-                biomeBuilder.addFeaturesByStep(GenerationStep.Feature.UNDERGROUND_STRUCTURES, "minecraft:monster_room");
-                biomeBuilder.addFeaturesByStep(GenerationStep.Feature.UNDERGROUND_ORES,
-                        "minecraft:ore_dirt",
-                        "minecraft:ore_gravel",
-                        "minecraft:ore_granite",
-                        "minecraft:ore_diorite",
-                        "minecraft:ore_andesite",
-                        "minecraft:ore_coal",
-                        "minecraft:ore_iron",
-                        "minecraft:ore_gold",
-                        "minecraft:ore_redstone",
-                        "minecraft:ore_diamond",
-                        "minecraft:ore_lapis",
-                        "minecraft:disk_sand",
-                        "minecraft:disk_clay",
-                        "minecraft:disk_gravel"
-                );
-            });
-
-            pack.addConfiguredSurfaceBuilder(id("test_surface_builder"), configuredSurfaceBuilder -> {
-                configuredSurfaceBuilder.surfaceBuilderID("minecraft:basalt_deltas")
-                        .topMaterial(blockStateDataBuilder -> blockStateDataBuilder.name("minecraft:blackstone"))
-                        .underMaterial(blockStateDataBuilder -> blockStateDataBuilder.name("minecraft:basalt").setProperty("axis", "y"))
-                        .underwaterMaterial(blockStateDataBuilder -> blockStateDataBuilder.name("minecraft:magma_block"));
-            });
-
-            pack.addConfiguredCarver(id("test_carver"), carverBuilder -> {
-                carverBuilder.probability(0.9F).name(new Identifier("cave").toString());
-            });
-
             pack.addDimensionType(testDimension.getValue(), dimensionTypeBuilder -> {
                 dimensionTypeBuilder
                         .natural(true).hasRaids(false).respawnAnchorWorks(false).bedWorks(false).piglinSafe(false)
@@ -230,9 +117,100 @@ public class ArtificeTestMod implements ModInitializer, ClientModInitializer {
                     }, new BiomeSourceBuilder.FixedBiomeSourceBuilder());
                 }, new TestChunkGeneratorTypeBuilder());
             });
+
+            pack.addBiome(id("test_biome"), biomeBuilder -> {
+//                biomeBuilder.surfaceBuilder(id("test_surface_builder").toString());
+
+                biomeBuilder.precipitation(Biome.Precipitation.RAIN).surfaceBuilder("minecraft:grass");
+                biomeBuilder.category(Biome.Category.PLAINS);
+                biomeBuilder.depth(0.125F);
+                biomeBuilder.scale(0.05F);
+                biomeBuilder.temperature(0.8F);
+                biomeBuilder.downfall(0.4F);
+                biomeBuilder.skyColor(4159204);
+                biomeBuilder.effects(biomeEffectsBuilder -> {
+                    biomeEffectsBuilder.waterColor(4159204);
+                    biomeEffectsBuilder.waterFogColor(329011);
+                    biomeEffectsBuilder.fogColor(12638463);
+                });
+                biomeBuilder.addAirCarvers(id("test_carver").toString());
+                biomeBuilder.addFeaturesbyStep(GenerationStep.Feature.LAKES, "minecraft:lake_water", "minecraft:lake_lava")
+                        .addFeaturesbyStep(GenerationStep.Feature.VEGETAL_DECORATION, id("test_decorated_feature").toString());
+            });
+
+            pack.addConfiguredCarver(id("test_carver"), carverBuilder -> {
+                carverBuilder.probability(0.9F).name(new Identifier("cave").toString());
+            });
+
+            pack.addConfiguredSurfaceBuilder(id("test_surface_builder"), configuredSurfaceBuilder -> {
+                configuredSurfaceBuilder.surfaceBuilderID("minecraft:default")
+                        .topMaterial(blockStateDataBuilder -> {
+                            blockStateDataBuilder.name("minecraft:gold_block");
+                        })
+                        .underMaterial(blockStateDataBuilder -> blockStateDataBuilder.name("minecraft:gold_ore"))
+                        .underwaterMaterial(blockStateDataBuilder -> blockStateDataBuilder.name("minecraft:bedrock"));
+            });
+
+            // Tested, it works now. Wasn't in 20w28a.
+            pack.addConfiguredFeature(id("test_featureee"), configuredFeatureBuilder -> {
+                configuredFeatureBuilder.featureID("minecraft:tree")
+                        .featureConfig(treeFeatureConfigBuilder -> {
+                            treeFeatureConfigBuilder
+                                    .ignoreVines(true)
+                                    .maxWaterDepth(5)
+                                    .trunkProvider(simpleBlockStateProviderBuilder -> {
+                                        simpleBlockStateProviderBuilder.state(blockStateDataBuilder -> {
+                                            blockStateDataBuilder.name("minecraft:oak_log").setProperty("axis", "y");
+                                        });
+                                    }, new BlockStateProviderBuilder.SimpleBlockStateProviderBuilder())
+                                    .leavesProvider(simpleBlockStateProviderBuilder -> {
+                                        simpleBlockStateProviderBuilder.state(blockStateDataBuilder -> {
+                                            blockStateDataBuilder.name("minecraft:spruce_leaves")
+                                                    .setProperty("persistent","false")
+                                                    .setProperty("distance","7");
+                                        });
+                                    }, new BlockStateProviderBuilder.SimpleBlockStateProviderBuilder())
+                                    .foliagePlacer(foliagePlacerBuilder -> {
+                                        foliagePlacerBuilder.height(2).offset(1).radius(2);
+                                    }, new FoliagePlacerBuilder.BlobFoliagePlacerBuilder())
+                                    .trunkPlacer(fancyTrunkPlacerBuilder -> {
+                                        fancyTrunkPlacerBuilder.baseHeight(12).heightRandA(3).heightRandB(4);
+                                    }, new TrunkPlacerBuilder.FancyTrunkPlacerBuilder())
+                                    .minimumSize(twoLayersFeatureSizeBuilder -> {
+                                        twoLayersFeatureSizeBuilder.limit(10).lowerSize(1).upperSize(9);
+                                    }, new FeatureSizeBuilder.TwoLayersFeatureSizeBuilder())
+                                    .heightmap(Heightmap.Type.OCEAN_FLOOR);
+                        }, new TreeFeatureConfigBuilder());
+            });
+
+            // Should be working but Minecraft coders did something wrong and the default feature is being return when it shouldn't resulting in a crash.
+            pack.addConfiguredFeature(id("test_decorated_feature"), configuredFeatureBuilder -> {
+                configuredFeatureBuilder.featureID("minecraft:decorated")
+                    .featureConfig(decoratedFeatureConfigBuilder -> {
+                        decoratedFeatureConfigBuilder.feature(configuredSubFeatureBuilder -> {
+                            configuredSubFeatureBuilder.featureID("minecraft:decorated").featureConfig(decoratedFeatureConfigBuilder1 -> {
+                                decoratedFeatureConfigBuilder1.feature(id("test_featureee").toString())
+                                        .decorator(configuredDecoratorBuilder -> {
+                                            configuredDecoratorBuilder.name("minecraft:decorated").config(decoratedDecoratorConfigBuilder -> {
+                                                decoratedDecoratorConfigBuilder.innerDecorator(configuredDecoratorBuilder1 -> {
+                                                    configuredDecoratorBuilder1.defaultConfig().name("minecraft:heightmap");
+                                                }).outerDecorator(configuredDecoratorBuilder1 -> {
+                                                    configuredDecoratorBuilder1.defaultConfig().name("minecraft:square");
+                                                });
+                                            }, new DecoratedDecoratorConfigBuilder());
+                                        });
+                            }, new DecoratedFeatureConfigBuilder());
+                        }).decorator(configuredDecoratorBuilder -> {
+                            configuredDecoratorBuilder.name("minecraft:count_extra")
+                                    .config(countExtraDecoratorConfigBuilder -> {
+                                        countExtraDecoratorConfigBuilder.count(10).extraChance(0.2F).extraCount(2);
+                                    }, new CountExtraDecoratorConfigBuilder());
+                        });
+                    },new DecoratedFeatureConfigBuilder());
+            });
         });
         try {
-            dataPack.dumpResources("testing");
+            dataPack.dumpResources("dump");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -270,9 +248,8 @@ public class ArtificeTestMod implements ModInitializer, ClientModInitializer {
                 .entry("item.artifice.test_item", "Artifice Test Item in custom lang")
                 .entry("block.artifice.test_block", "Artifice Test Block in custom lang"));
         });
-
         try {
-            resourcePack.dumpResources("testing_client");
+            resourcePack.dumpResources("dump_client");
         } catch (IOException e) {
             e.printStackTrace();
         }
