@@ -57,7 +57,7 @@ public class ArtificeTestMod implements ModInitializer, ClientModInitializer {
     private static final RegistryKey<DimensionType> testDimensionCustom = RegistryKey.of(Registry.DIMENSION_TYPE_KEY,id("test_dimension_type_custom"));
 
     public void onInitialize() {
-        Registry.register(Registry.CHUNK_GENERATOR, RegistryKey.of(Registry.DIMENSION,id("test_chunk_generator")).getValue(), TestChunkGenerator.CODEC);
+        Registry.register(Registry.CHUNK_GENERATOR, RegistryKey.of(Registry.CHUNK_GENERATOR_KEY, id("test_chunk_generator")).getValue(), TestChunkGenerator.CODEC);
         Artifice.registerDataPack(id("testmod"), pack -> {
             pack.setDisplayName("Artifice Test Data");
             pack.setDescription("Data for the Artifice test mod");

@@ -15,6 +15,56 @@ public class NoiseSettingsBuilder extends TypedJsonBuilder<JsonResource<JsonObje
 
     /**
      * Set the bedrock roof position.
+     * @param aquifersEnabled
+     * @return
+     */
+    public NoiseSettingsBuilder aquifersEnabled(boolean aquifersEnabled) {
+        this.root.addProperty("aquifers_enabled", aquifersEnabled);
+        return this;
+    }
+
+    /**
+     * Set the bedrock roof position.
+     * @param noiseCavesEnabled
+     * @return
+     */
+    public NoiseSettingsBuilder noiseCavesEnabled(boolean noiseCavesEnabled) {
+        this.root.addProperty("noise_caves_enabled", noiseCavesEnabled);
+        return this;
+    }
+
+    /**
+     * Set the bedrock roof position.
+     * @param deepslateEnabled
+     * @return
+     */
+    public NoiseSettingsBuilder deepslateEnabled(boolean deepslateEnabled) {
+        this.root.addProperty("deepslate_enabled", deepslateEnabled);
+        return this;
+    }
+
+    /**
+     * Set the bedrock roof position.
+     * @param oreVeinsEnabled
+     * @return
+     */
+    public NoiseSettingsBuilder oreVeinsEnabled(boolean oreVeinsEnabled) {
+        this.root.addProperty("ore_veins_enabled", oreVeinsEnabled);
+        return this;
+    }
+
+    /**
+     * Set the bedrock roof position.
+     * @param minSurfaceLevel
+     * @return
+     */
+    public NoiseSettingsBuilder minSurfaceLevel(int minSurfaceLevel) {
+        this.root.addProperty("min_surface_level", minSurfaceLevel);
+        return this;
+    }
+
+    /**
+     * Set the bedrock roof position.
      * @param bedrockRoofPosition
      * @return
      */
@@ -53,21 +103,6 @@ public class NoiseSettingsBuilder extends TypedJsonBuilder<JsonResource<JsonObje
 
     public NoiseSettingsBuilder disableMobGeneration(boolean disableMobGeneration) {
         this.root.addProperty("disable_mob_generation", disableMobGeneration);
-        return this;
-    }
-
-    public NoiseSettingsBuilder aquifersEnabled(boolean aquifersEnabled) {
-        this.root.addProperty("aquifers_enabled", aquifersEnabled);
-        return this;
-    }
-
-    public NoiseSettingsBuilder noiseCavesEnabled(boolean noiseCavesEnabled) {
-        this.root.addProperty("noise_caves_enabled", noiseCavesEnabled);
-        return this;
-    }
-
-    public NoiseSettingsBuilder grimstoneEnabled(boolean grimstoneEnabled) {
-        this.root.addProperty("grimstone_enabled", grimstoneEnabled);
         return this;
     }
 

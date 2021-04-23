@@ -4,13 +4,13 @@ import com.swordglowsblue.artifice.api.ArtificeResourcePack.ClientResourcePackBu
 import com.swordglowsblue.artifice.api.ArtificeResourcePack.ServerResourcePackBuilder;
 import com.swordglowsblue.artifice.api.util.Processor;
 import com.swordglowsblue.artifice.common.ArtificeRegistry;
+import com.swordglowsblue.artifice.common.ClientResourcePackProfileLike;
 import com.swordglowsblue.artifice.impl.ArtificeImpl;
 import com.swordglowsblue.artifice.impl.DynamicResourcePackFactory;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
 
 /**
  * Registry methods for Artifice's virtual resource pack support.
@@ -107,8 +107,8 @@ public final class Artifice {
      * @see ArtificeResourcePack#ofAssets
      */
     @Environment(EnvType.CLIENT)
-    public static void registerAssetPack(Identifier id, Processor<ClientResourcePackBuilder> register) {
-        ArtificeImpl.registerSafely(ArtificeRegistry.ASSETS, id, new DynamicResourcePackFactory<>(ResourceType.CLIENT_RESOURCES, id, register));
+    public static ClientResourcePackProfileLike registerAssetPack(Identifier id, Processor<ClientResourcePackBuilder> register) {
+        return ArtificeImpl.registerSafely(ArtificeRegistry.ASSETS, id, new DynamicResourcePackFactory<>(ResourceType.CLIENT_RESOURCES, id, register));
     }
 
 

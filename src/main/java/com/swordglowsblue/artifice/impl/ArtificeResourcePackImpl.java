@@ -30,7 +30,6 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.api.EnvironmentInterface;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.SharedConstants;
 import net.minecraft.client.resource.language.LanguageDefinition;
 import net.minecraft.resource.ResourcePackProfile;
 import net.minecraft.resource.ResourcePackSource;
@@ -69,7 +68,7 @@ public class ArtificeResourcePackImpl implements ArtificeResourcePack {
         registerResources.accept((T) new ArtificeResourcePackBuilder());
 
         JsonObject packMeta = new JsonObjectBuilder()
-                        .add("pack_format", SharedConstants.getGameVersion().getPackVersion())
+                        .add("pack_format", 7)
                         .add("description", description != null ? description : "In-memory resource pack created with Artifice")
                         .build();
 
@@ -174,7 +173,7 @@ public class ArtificeResourcePackImpl implements ArtificeResourcePack {
             }
 
             JsonObject packMeta = new JsonObjectBuilder()
-                    .add("pack_format", SharedConstants.getGameVersion().getPackVersion())
+                    .add("pack_format", 7)
                     .add("description", description != null ? description : "In-memory resource pack created with Artifice")
                     .build();
 
