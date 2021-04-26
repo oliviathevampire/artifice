@@ -151,8 +151,6 @@ public class NoiseConfigBuilder extends TypedJsonBuilder<JsonObject> {
         }
 
         public SlideConfigBuilder size(int size) {
-            if (size > 255) throw new IllegalArgumentException("size can't be higher than 255! Found " + size);
-            if (size < 0) throw new IllegalArgumentException("size can't be smaller than 0! Found " + size);
             this.root.addProperty("size", size);
             return this;
         }
