@@ -1,33 +1,28 @@
 package com.swordglowsblue.artifice.common;
 
-import com.mojang.serialization.Lifecycle;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.MutableRegistry;
 import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryKey;
-import net.minecraft.util.registry.SimpleRegistry;
 
 public class ArtificeRegistry {
     /**
      * The {@link Registry} for client-side resource packs.
      */
     @Environment(EnvType.CLIENT)
-    public static final SimpleRegistry<ClientResourcePackProfileLike> RESOURCE_PACKS = Registry.register((Registry) Registry.REGISTRIES,
-            new Identifier("artifice", "resource_packs"),
-            new SimpleRegistry<>(
-                    RegistryKey.ofRegistry(new Identifier("artifice", "resource_packs")),
-                    Lifecycle.stable()
-            )
-    );
+    public static final MutableRegistry<ClientResourcePackProfileLike> RESOURCE_PACKS = FabricRegistryBuilder.createSimple(
+            ClientResourcePackProfileLike.class,
+            new Identifier("artifice", "resource_packs")
+    ).buildAndRegister();
+
     /**
      * The {@link Registry} for server-side resource packs.
      */
-    public static final SimpleRegistry<ServerResourcePackProfileLike> DATA_PACKS = Registry.register((Registry) Registry.REGISTRIES,
-            new Identifier("artifice", "data_packs"),
-            new SimpleRegistry<>(
-                RegistryKey.ofRegistry(new Identifier("artifice", "data_packs")),
-                Lifecycle.stable()
-            )
-    );
+    @Environment(EnvType.SERVER)
+    public static final MutableRegistry<ServerResourcePackProfileLike> DATA_PACKS = FabricRegistryBuilder.createSimple(
+            ServerResourcePackProfileLike.class,
+            new Identifier("artifice", "data_packs")
+    ).buildAndRegister();
 }
