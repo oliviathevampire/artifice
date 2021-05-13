@@ -420,10 +420,10 @@ public class ArtificeResourcePackImpl implements ArtificeResourcePack {
         if (displayName == null) {
             switch (this.type) {
             case CLIENT_RESOURCES:
-                Identifier aid = ArtificeRegistry.ASSETS.getId(this);
+                Identifier aid = ArtificeRegistry.RESOURCE_PACKS.getId(this);
                 return displayName = aid != null ? aid.toString() : "Generated Resources";
             case SERVER_DATA:
-                Identifier did = ArtificeRegistry.DATA.getId(this);
+                Identifier did = ArtificeRegistry.DATA_PACKS.getId(this);
                 return displayName = did != null ? did.toString() : "Generated Data";
             }
         }

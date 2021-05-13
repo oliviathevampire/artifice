@@ -57,7 +57,7 @@ public final class Artifice {
     @Deprecated
     @Environment(EnvType.CLIENT)
     public static ArtificeResourcePack registerAssets(Identifier id, Processor<ClientResourcePackBuilder> register) {
-        return ArtificeImpl.registerSafely(ArtificeRegistry.ASSETS, id, ArtificeResourcePack.ofAssets(register));
+        return ArtificeImpl.registerSafely(ArtificeRegistry.RESOURCE_PACKS, id, ArtificeResourcePack.ofAssets(register));
     }
 
     /**
@@ -70,7 +70,7 @@ public final class Artifice {
      */
     @Deprecated
     public static ArtificeResourcePack registerData(Identifier id, Processor<ServerResourcePackBuilder> register) {
-        return ArtificeImpl.registerSafely(ArtificeRegistry.DATA, id, ArtificeResourcePack.ofData(register));
+        return ArtificeImpl.registerSafely(ArtificeRegistry.DATA_PACKS, id, ArtificeResourcePack.ofData(register));
     }
 
     /**
@@ -108,7 +108,7 @@ public final class Artifice {
      */
     @Environment(EnvType.CLIENT)
     public static ClientResourcePackProfileLike registerAssetPack(Identifier id, Processor<ClientResourcePackBuilder> register) {
-        return ArtificeImpl.registerSafely(ArtificeRegistry.ASSETS, id, new DynamicResourcePackFactory<>(ResourceType.CLIENT_RESOURCES, id, register));
+        return ArtificeImpl.registerSafely(ArtificeRegistry.RESOURCE_PACKS, id, new DynamicResourcePackFactory<>(ResourceType.CLIENT_RESOURCES, id, register));
     }
 
 
@@ -121,7 +121,7 @@ public final class Artifice {
      * @see ArtificeResourcePack#ofData
      */
     public static void registerDataPack(Identifier id, Processor<ServerResourcePackBuilder> register) {
-        ArtificeImpl.registerSafely(ArtificeRegistry.DATA, id, new DynamicResourcePackFactory<>(ResourceType.SERVER_DATA, id, register));
+        ArtificeImpl.registerSafely(ArtificeRegistry.DATA_PACKS, id, new DynamicResourcePackFactory<>(ResourceType.SERVER_DATA, id, register));
     }
 
     /**
@@ -161,7 +161,7 @@ public final class Artifice {
     public static ArtificeResourcePack registerAssets(Identifier id, ArtificeResourcePack pack) {
         if (pack.getType() != ResourceType.CLIENT_RESOURCES)
             throw new IllegalArgumentException("Cannot register a server-side pack as assets");
-        return ArtificeImpl.registerSafely(ArtificeRegistry.ASSETS, id, pack);
+        return ArtificeImpl.registerSafely(ArtificeRegistry.RESOURCE_PACKS, id, pack);
     }
 
     /**
@@ -175,6 +175,6 @@ public final class Artifice {
     public static ArtificeResourcePack registerData(Identifier id, ArtificeResourcePack pack) {
         if (pack.getType() != ResourceType.SERVER_DATA)
             throw new IllegalArgumentException("Cannot register a client-side pack as data");
-        return ArtificeImpl.registerSafely(ArtificeRegistry.DATA, id, pack);
+        return ArtificeImpl.registerSafely(ArtificeRegistry.DATA_PACKS, id, pack);
     }
 }

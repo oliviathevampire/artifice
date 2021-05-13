@@ -85,7 +85,8 @@ public class ArtificeTestMod implements ModInitializer, ClientModInitializer {
                 dimensionTypeBuilder
                         .natural(false).hasRaids(false).respawnAnchorWorks(true).bedWorks(false).piglinSafe(false)
                         .ambientLight(6.0F).infiniburn(BlockTags.INFINIBURN_OVERWORLD.getId())
-                        .ultrawarm(false).hasCeiling(false).hasSkylight(false).coordinate_scale(1.0).logicalHeight(832).height(832).minimumY(-512).effects("minecraft:the_end");
+                        .ultrawarm(false).hasCeiling(false).hasSkylight(false).coordinate_scale(1.0).logicalHeight(832)
+                        .height(832).minimumY(-512).effects("minecraft:the_end");
             });
             pack.addDimension(id("test_dimension"), dimensionBuilder -> {
                 dimensionBuilder.dimensionType(testDimension.getValue()).flatGenerator(flatChunkGeneratorTypeBuilder -> {

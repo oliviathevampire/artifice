@@ -16,8 +16,8 @@ public final class ArtificeAssetsResourcePackProvider implements ResourcePackPro
     @Environment(EnvType.CLIENT)
     @Override
     public void register(Consumer<ResourcePackProfile> consumer, ResourcePackProfile.Factory factory) {
-        for (Identifier id : ArtificeRegistry.ASSETS.getIds()) {
-            consumer.accept( ArtificeRegistry.ASSETS.get(id).toClientResourcePackProfile(factory).get());
+        for (Identifier id : ArtificeRegistry.RESOURCE_PACKS.getIds()) {
+            consumer.accept( ArtificeRegistry.RESOURCE_PACKS.get(id).toClientResourcePackProfile(factory).get());
         }
     }
 }
