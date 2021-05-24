@@ -1,5 +1,5 @@
 plugins {
-	id 'fabric-loom' version "0.8.7"
+	id 'fabric-loom' version "0.7-SNAPSHOT"
 	id 'maven-publish'
 	id "com.github.fudge.forgedflowerloom" version "2.0.0"
 }
@@ -11,8 +11,8 @@ archivesBaseName = mod_id
 version = total_version
 group = project.maven_group
 
-sourceCompatibility = JavaVersion.VERSION_16
-targetCompatibility = JavaVersion.VERSION_16
+sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_8
 
 repositories {
     mavenCentral()
@@ -65,7 +65,6 @@ processResources {
 
 tasks.withType(JavaCompile).configureEach {
 	it.options.encoding = "UTF-8"
-	it.options.release = 16
 }
 
 java {

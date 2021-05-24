@@ -28,7 +28,10 @@ import net.minecraft.tag.BlockTags;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
-import net.minecraft.world.*;
+import net.minecraft.world.BlockView;
+import net.minecraft.world.ChunkRegion;
+import net.minecraft.world.Heightmap;
+import net.minecraft.world.WorldAccess;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.source.BiomeSource;
 import net.minecraft.world.chunk.Chunk;
@@ -42,8 +45,6 @@ import net.minecraft.world.gen.feature.StructureFeature;
 
 import java.io.IOException;
 import java.util.Random;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executor;
 
 public class ArtificeTestMod implements ModInitializer, ClientModInitializer {
     private static Identifier id(String name) { return new Identifier("artifice", name); }
@@ -148,7 +149,7 @@ public class ArtificeTestMod implements ModInitializer, ClientModInitializer {
             });
 
             pack.addConfiguredCarver(id("test_carver"), carverBuilder -> {
-                carverBuilder.probability(0.9F).name(new Identifier("cave").toString());
+                carverBuilder.probability(0.9F).type(new Identifier("cave"));
             });
 
             pack.addConfiguredSurfaceBuilder(id("test_surface_builder"), configuredSurfaceBuilder -> {
@@ -298,18 +299,18 @@ public class ArtificeTestMod implements ModInitializer, ClientModInitializer {
         }
 
         @Override
-        public CompletableFuture<Chunk> populateNoise(Executor executor, StructureAccessor accessor, Chunk chunk) {
-            return null;
+        public void populateNoise(WorldAccess world, StructureAccessor accessor, Chunk chunk) {
+
         }
 
         @Override
-        public int getHeight(int x, int z, Heightmap.Type heightmap, HeightLimitView world) {
+        public int getHeight(int x, int z, Heightmap.Type heightmapType) {
             return 0;
         }
 
         @Override
-        public VerticalBlockSample getColumnSample(int x, int z, HeightLimitView world) {
-            return new VerticalBlockSample(10, new BlockState[0]);
+        public BlockView getColumnSample(int x, int z) {
+            return new VerticalBlockSample(new BlockState[10]);
         }
     }
 

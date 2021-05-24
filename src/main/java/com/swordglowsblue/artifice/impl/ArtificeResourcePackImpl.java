@@ -430,7 +430,7 @@ public class ArtificeResourcePackImpl implements ArtificeResourcePack {
         return displayName;
     }
 
-    public static ResourcePackSource ARTIFICE_RESOURCE_PACK_SOURCE = ResourcePackSource.nameAndSource("pack.source.artifice");
+    public static ResourcePackSource ARTIFICE_RESOURCE_PACK_SOURCE = ResourcePackSource.method_29486("pack.source.artifice");
 
     @Override
     @Environment(EnvType.CLIENT)
