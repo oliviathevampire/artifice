@@ -1,5 +1,5 @@
 plugins {
-	id 'fabric-loom' version "0.8.2"
+	id 'fabric-loom' version "0.8.7"
 	id 'maven-publish'
 	id "com.github.fudge.forgedflowerloom" version "2.0.0"
 }
@@ -11,24 +11,21 @@ archivesBaseName = mod_id
 version = total_version
 group = project.maven_group
 
-sourceCompatibility = JavaVersion.VERSION_1_8
-targetCompatibility = JavaVersion.VERSION_1_8
-
+sourceCompatibility = JavaVersion.VERSION_16
+targetCompatibility = JavaVersion.VERSION_16
 
 repositories {
     mavenCentral()
-//    maven { url "https://minecraft.curseforge.com/api/maven/" }
-//	maven { url 'http://maven.sargunv.s3-website-us-west-2.amazonaws.com/' }
 }
-minecraft {
-}
+
+minecraft {}
 
 sourceSets {
 	testmod {
 		compileClasspath += main.compileClasspath
 		runtimeClasspath += main.runtimeClasspath
 	}
-	test{
+	test {
 		compileClasspath += main.compileClasspath
 		runtimeClasspath += main.runtimeClasspath
 	}
@@ -66,87 +63,35 @@ processResources {
 	}
 }
 
-tasks.withType(JavaCompile) { options.encoding = "UTF-8" }
-task sourcesJar(type: Jar, dependsOn: classes) {
-	classifier = "sources"
-	from sourceSets.main.allSource
-}
-jar { from "LICENSE" }
-def pomConfig = {
-	licenses {
-		license {
-			name project.license
-		}
-	}
-	developers {
-		developer {
-			id "fudge"
-			name "natan"
-			email "natandestroyer100@gmail.com"
-		}
-	}
-
-	scm {
-		url githubUrl
-	}
+tasks.withType(JavaCompile).configureEach {
+	it.options.encoding = "UTF-8"
+	it.options.release = 16
 }
 
-
-// ensure that the encoding is set to UTF-8, no matter what the system default is
-// this fixes some edge cases with special characters not displaying correctly
-// see http://yodaconditions.net/blog/fix-for-java-file-encoding-problems-with-gradle.html
-tasks.withType(JavaCompile) {
-	options.encoding = "UTF-8"
+java {
+	withSourcesJar()
 }
-
 
 jar {
-	from "LICENSE"
-}
-
-/*bintray {
-	user = project.hasProperty('bintray_user') ? project.property('bintray_user') : ""
-	key = project.hasProperty('bintray_api_key') ? project.property('bintray_api_key') : ""
-	publications = ["MavenPublication"]
-	publish = true //[Default: false] Whether version should be auto published after an upload
-	pkg {
-		repo = "libs"
-		name = mod_id
-		desc = mod_description
-		websiteUrl = githubUrl
-		issueTrackerUrl = "$githubUrl/issues"
-		githubRepo = github_repo //Optional Github repository
-		githubReleaseNotesFile = 'README.md' //Optional Github readme file
-		licenses = [license]
-		vcsUrl = githubUrl
-		version {
-			name = total_version
-			released = new Date()
-		}
+	from("LICENSE") {
+		rename { "${it}_${project.archivesBaseName}"}
 	}
-
-}*/
-
+}
 
 publishing {
 	publications {
-		MavenPublication(MavenPublication) {
-			artifact(remapJar)
-
+		mavenJava(MavenPublication) {
+			artifact(remapJar) {
+				builtBy remapJar
+			}
 			artifact(sourcesJar) {
-				classifier = "sources"
 				builtBy remapSourcesJar
 			}
-			groupId maven_group
-			artifactId mod_id
-			version total_version
-			pom.withXml {
-				def root = asNode()
-				root.appendNode('description', mod_description)
-				root.appendNode('name', mod_id)
-				root.appendNode('url', githubUrl)
-				root.children().last() + pomConfig
-			}
+		}
+	}
+	repositories {
+		maven {
+			url file("F:\\Development\\Work\\VampireStudiosMaven\\")
 		}
 	}
 }
@@ -167,7 +112,3 @@ task updateTemplate(type: Copy) {
 	}
 	destinationDir = rootDir
 }
-
-//bintrayUpload.dependsOn updateTemplate
-//bintrayUpload.dependsOn build
-//bintrayUpload.dependsOn generatePomFileForMavenPublicationPublication

@@ -3,6 +3,7 @@ package com.swordglowsblue.artifice.api.builder.data.worldgen.configured;
 import com.google.gson.JsonObject;
 import com.swordglowsblue.artifice.api.builder.TypedJsonBuilder;
 import com.swordglowsblue.artifice.api.resource.JsonResource;
+import net.minecraft.util.Identifier;
 
 public class ConfiguredCarverBuilder extends TypedJsonBuilder<JsonResource<JsonObject>> {
     public ConfiguredCarverBuilder() {
@@ -13,8 +14,8 @@ public class ConfiguredCarverBuilder extends TypedJsonBuilder<JsonResource<JsonO
      * @param id ID of an existing carver.
      * @return this
      */
-    public ConfiguredCarverBuilder name(String id) {
-        this.root.addProperty("type", id);
+    public ConfiguredCarverBuilder type(Identifier id) {
+        this.root.addProperty("type", id.toString());
         return this;
     }
 
